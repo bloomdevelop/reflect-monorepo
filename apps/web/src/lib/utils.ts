@@ -19,17 +19,15 @@ export class CdnClass {
 	 */
 	async uploadFile(
 		tag: string,
-		file: Blob | Buffer,
+		file: Blob,
 		filename = "file",
 	): Promise<string> {
 		try {
 			const formData = new FormData();
 			const blob =
-				file instanceof Buffer
-					? new Blob([new Uint8Array(file)])
-					: file;
+				new Blob([new Uint8Array(await file.arrayBuffer())]);
 
-			formData.append("file", blob as Blob, filename);
+			formData.append("file", blob , filename);
 
 			if (!client.sessionToken) {
 				throw new Error("No session token");

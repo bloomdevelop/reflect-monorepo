@@ -69,17 +69,16 @@ export default function ComposeComponent({
         if (!values.content?.trim() && files.length === 0) return;
 
         try {
-            let attachments: string[] = [];
+            const attachments: string[] = [];
             
             // Upload files if any
             if (files.length > 0) {
+                // Use Promise.all to wait for all uploads to complete
                 const uploadPromises = files.map(async (fileWithPreview) => {
-                    const formData = new FormData();
-                    formData.append('file', fileWithPreview.preview);
-                    
                     try {
                         const imageId = await cdn.uploadFile('attachments', fileWithPreview.file);
-                        attachments.push(imageId);
+                        toast.info("File uploaded successfully", {description: imageId});
+                        return imageId;
                     } catch (error) {
                         if (error instanceof Error) {
                             toast.error("Failed to upload file", {description: error.message}); 
@@ -91,15 +90,15 @@ export default function ComposeComponent({
                     }
                 });
 
-                const results = await Promise.all(uploadPromises);
-                attachments = results.filter((url): url is NonNullable<typeof url> => url !== null);
+                // Wait for all uploads to complete and filter out any failed uploads
+                const uploadedIds = (await Promise.all(uploadPromises)).filter(Boolean) as string[];
+                attachments.push(...uploadedIds);
             }
-
 
             // Send message with content and/or attachments
             const sentMessage = await channel.sendMessage({
                 content: values.content || undefined,
-                attachments
+                attachments: attachments
             });
 
             // Notify parent component about the new message

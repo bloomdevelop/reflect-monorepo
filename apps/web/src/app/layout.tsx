@@ -17,8 +17,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const client = new Client();
-
   return (
     <html lang="en">
       <body
