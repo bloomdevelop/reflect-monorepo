@@ -7,7 +7,7 @@ export default function HomePage() {
 		<div className="w-full h-full flex-1 flex items-center justify-center">
 			<Card className="w-full max-w-md">
 				<CardHeader>
-					<h1>Hello {client.user?.username || "Not Logged In"}</h1>
+					<h1>Hello {client.sessionToken?.username || "Not Logged In"}</h1>
 				</CardHeader>
                 <CardContent>
                     <Accordion

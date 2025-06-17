@@ -1,7 +1,7 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
 	Form,
 	FormControl,
@@ -10,16 +10,15 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { Loader2Icon } from "lucide-react";
 import { client } from "@/lib/revolt";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { TabsTrigger } from "@radix-ui/react-tabs";
+import { z } from "zod";
 
 const formSchema = z.object({
 	email: z.string(),
@@ -54,7 +53,7 @@ export default function LoginPage() {
 						});
 
 					client.connect();
-					console.log(`Your Username: ${client.user?.username}`);
+					console.log(`Your Username: ${client.sessionToken?.username}`);
 
 					setIsLoading(false);
 					return router.push("/app/home");

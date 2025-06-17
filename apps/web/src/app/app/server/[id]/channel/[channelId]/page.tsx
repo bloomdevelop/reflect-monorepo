@@ -2,9 +2,10 @@
 
 import { client } from "@/lib/revolt";
 import { Suspense, useEffect, useState, useRef } from "react";
-import type { Message } from "revolt.js";
+import type { Message, Channel } from "revolt.js";
 import { Spinner } from "@/components/ui/spinner";
 import MessageComponent from "@/components/message-component";
+import ComposeComponent from "@/components/compose";
 
 export default function ChannelPage({
   params,
@@ -28,16 +29,20 @@ export default function ChannelPage({
 	const [messages, setMessages] = useState<Message[] | undefined>(undefined);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
+  const [channel, setChannel] = useState<Channel | undefined>(undefined);
+
   useEffect(() => {
     if (!channelId) return;
 
     async function fetchMessages() {
       const id = channelId as string;
-      const channel = client.channels.get(id);
+      const channel = client.channels.get(id) as Channel;
 
       if (!channel) return;
 
-      const msgs = await channel.fetchMessages({ limit: 100 });
+      setChannel(channel);
+
+      const msgs = (await channel.fetchMessages({ limit: 100 })).reverse();
       setMessages(msgs);
     }
 
@@ -57,11 +62,23 @@ export default function ChannelPage({
 	return (
 		<div className="flex flex-col flex-1 h-full overflow-y-auto">
 			<Suspense fallback={<div className="flex items-center justify-center h-full"><Spinner /></div>}>
-				{messages?.slice().reverse().map((message, index) => (
-          <MessageComponent key={message.id} message={message} delay={index * 0.1} />
+					{messages?.map((message, index, arr) => (
+          <MessageComponent 
+            key={message.id} 
+            message={message} 
+            delay={(arr.length - 1 - index) * 0.1} 
+          />
         ))}
         <div ref={bottomRef} />
 			</Suspense>
+      {channel && (
+        <ComposeComponent 
+          channel={channel} 
+          onMessageSent={(message) => {
+            setMessages(prev => prev ? [...prev, message] : [message]);
+          }}
+        />
+      )}
 		</div>
 	);
 }
