@@ -11,9 +11,13 @@ export default async function ServerLayout({
     const { id } = await params;
 
     return (
-        <div className="flex h-full flex-1 flex-row">
-            <ChannelListSidebar serverId={id} />
-            <div className="flex-1 overflow-y-auto">{children}</div>
+        <div className="flex flex-1 h-full min-h-0">
+            <div className="flex-shrink-0 h-full border-r border-sidebar-border">
+                <ChannelListSidebar serverId={id} />
+            </div>
+            <div className="flex-1 min-w-0 min-h-0 overflow-auto">
+                {children}
+            </div>
         </div>
     );
 }

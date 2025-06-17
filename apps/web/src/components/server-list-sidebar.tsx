@@ -18,6 +18,7 @@ import { client } from "@/lib/revolt";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { AnimatePresence, motion, type Variant } from "motion/react";
 import { Spinner } from "./ui/spinner";
+import { Separator } from "./ui/separator";
 
 export function ServerListSidebar() {
 	const [servers, setServers] = useState<Server[] | undefined>(undefined);
@@ -73,6 +74,7 @@ export function ServerListSidebar() {
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
+				<Separator />
 			</SidebarHeader>
 			<SidebarContent className="flex-1 h-full overflow-y-auto">
 				<SidebarGroup>
@@ -115,7 +117,7 @@ export function ServerListSidebar() {
 														delay: index * 0.1,
 													}}
 												>
-													<SidebarMenuButton size="lg" asChild>
+													<SidebarMenuButton tooltip={server.name} size="lg" asChild>
 														<Link href={`/app/server/${server.id}`}>
 															<Avatar>
 																<AvatarImage

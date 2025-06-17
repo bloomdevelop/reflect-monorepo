@@ -16,9 +16,9 @@ export default function MessageComponent({
     <AnimatePresence>
 			<motion.div
 				className="mx-2 my-3 border border-border p-4 rounded-md flex flex-col gap-2"
-				initial={{ opacity: 0, y: 10 }}
+				initial={{ opacity: 0, y: -10 }}
 				animate={{ opacity: 1, y: 0 }}
-				exit={{ opacity: 0, y: 10 }}
+				exit={{ opacity: 0, y: -10 }}
 				transition={{ type: "spring", stiffness: 120, damping: 8, delay }}
 			>
 				<div className="flex flex-row items-center gap-3">
