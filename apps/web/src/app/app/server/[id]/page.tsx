@@ -22,7 +22,11 @@ export default function ServerPage({
 		let cancelled = false;
 		async function resolveParams() {
 			const resolved = (params instanceof Promise ? await params : params).id;
-			if (!cancelled) setServerId(resolved);
+			try {
+				if (!cancelled) setServerId(resolved);
+			} catch (error) {
+				console.error("Failed to resolve params:", error);
+			}
 		}
 		resolveParams();
 		return () => {
@@ -33,7 +37,7 @@ export default function ServerPage({
 	useEffect(() => {
 		async function fetchServer() {
 			addLog(`Fetching server with ID: ${serverId}`);
-			const server = client.servers.get(serverId as string);
+			const server = client.servers.get(serverId!);
 			if (!server) return;
 
 			setServer(server);

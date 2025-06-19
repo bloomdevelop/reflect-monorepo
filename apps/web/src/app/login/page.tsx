@@ -38,7 +38,7 @@ export default function LoginPage() {
 		},
 	});
 
-	async function onSubmit(values: z.infer<typeof formSchema>) {
+	function onSubmit(values: z.infer<typeof formSchema>) {
 		toast.promise(
 			async () => {
 				addLog(`Attempting to log in with email: ${values.email}`);

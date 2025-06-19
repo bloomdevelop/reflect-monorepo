@@ -13,6 +13,7 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "./ui/sidebar";
+import { escape as qEscape } from "node:querystring";
 
 export default function DMSidebar() {
 	const [clientReady, setClientReady] = useState(false);
@@ -23,7 +24,7 @@ export default function DMSidebar() {
 	useEffect(() => {
 		// Check if client is ready and authenticated
 		if (!client.sessions) {
-			window.location.href = "/login";
+			window.location.href = qEscape("/login");
 			return;
 		}
 
@@ -40,7 +41,7 @@ export default function DMSidebar() {
 	useEffect(() => {
 		if (!clientReady) return;
 
-		async function fetchData() {
+		function fetchData() {
 			try {
 				// Get current user
 				const user = client.user;

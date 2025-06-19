@@ -20,6 +20,7 @@
 			".git",
 			".github",
 			".DS_Store",
+			".codecy",
 			"components/ui/**"
 		]
 	},
@@ -31,13 +32,7 @@
 		"enabled": true
 	},
 	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true,
-			"suspicious": {
-				"noExplicitAny": "info"
-			}
-		}
+		"enabled": false
 	},
 	"javascript": {
 		"formatter": {

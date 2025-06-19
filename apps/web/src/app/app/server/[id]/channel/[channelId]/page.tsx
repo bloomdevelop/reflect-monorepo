@@ -19,9 +19,13 @@ export default function ChannelPage({
 	useEffect(() => {
 		let cancelled = false;
 		async function resolveParams() {
-			const resolved = (params instanceof Promise ? await params : params)
+			try {
+				const resolved = (params instanceof Promise ? await params : params)
 				.channelId;
-			if (!cancelled) setChannelId(resolved);
+				if (!cancelled) setChannelId(resolved);
+			} catch (error) {
+				console.error("Failed to resolve params:", error);
+			}
 		}
 		resolveParams();
 		return () => {
@@ -38,7 +42,7 @@ export default function ChannelPage({
 		if (!channelId) return;
 
 		async function fetchMessages() {
-			const id = channelId as string;
+			const id = channelId!;
 			addLog(`Fetching messages for channel ${id}`);
 			const channel = client.channels.get(id) as Channel;
 

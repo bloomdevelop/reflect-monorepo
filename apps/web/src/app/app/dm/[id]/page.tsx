@@ -18,7 +18,11 @@ export default function ChannelPage({
 		let cancelled = false;
 		async function resolveParams() {
 			const resolved = (params instanceof Promise ? await params : params).id;
-			if (!cancelled) setChannelId(resolved);
+			try {
+				if (!cancelled) setChannelId(resolved);
+			} catch (error) {
+				console.error("Failed to resolve params:", error);
+			}
 		}
 		resolveParams();
 		return () => {
@@ -35,7 +39,7 @@ export default function ChannelPage({
 		if (!channelId) return;
 
 		async function fetchMessages() {
-			const id = channelId as string;
+			const id = channelId!;
 			const channel = client.channels.get(id) as Channel;
 
 			if (!channel) return;
