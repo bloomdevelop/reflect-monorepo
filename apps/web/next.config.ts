@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [new URL("https://cdn.revoltusercontent.com/**")]
+  },
+  experimental: {
+    reactCompiler: true
+  }
 };
 
 export default nextConfig;

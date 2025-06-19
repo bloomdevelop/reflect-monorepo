@@ -10,14 +10,14 @@ import ComposeComponent from "@/components/compose";
 export default function ChannelPage({
   params,
 }: {
-  params: { channelId: string } | Promise<{ channelId: string }>;
+  params: { id: string } | Promise<{ id: string }>;
 }) {
   const [channelId, setChannelId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     async function resolveParams() {
-      const resolved = (params instanceof Promise ? await params : params).channelId;
+      const resolved = (params instanceof Promise ? await params : params).id;
       if (!cancelled) setChannelId(resolved);
     }
     resolveParams();
