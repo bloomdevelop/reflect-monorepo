@@ -5,7 +5,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { client } from "@/lib/revolt";
 import { Mail, MessageCircle, Settings, UserCircle2 } from "lucide-react";
 import Link from "next/link";
-import queryString from "node:querystring";
 import { useEffect, useState } from "react";
 import type { Channel, User } from "revolt.js";
 
@@ -30,7 +29,7 @@ export default function HomePage() {
 	useEffect(() => {
 		// Check if client is ready and authenticated
 		if (!client.sessions) {
-			window.location.href = queryString.escape("/login");
+			window.location.href = escape("/login");
 			return;
 		}
 
