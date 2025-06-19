@@ -7,7 +7,7 @@ import { client } from "@/lib/revolt";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import type { Channel, Message } from "revolt.js";
 
-export default function ChannelPage({
+export default function DmPage({
 	params,
 }: {
 	params: { id: string } | Promise<{ id: string }>;
@@ -24,7 +24,10 @@ export default function ChannelPage({
 				console.error("Failed to resolve params:", error);
 			}
 		}
-		resolveParams();
+		resolveParams().catch((error) => {
+			console.error("Error resolving params:", error);
+		});
+
 		return () => {
 			cancelled = true;
 		};
@@ -33,7 +36,7 @@ export default function ChannelPage({
 	const [messages, setMessages] = useState<Message[] | undefined>(undefined);
 	const bottomRef = useRef<HTMLDivElement | null>(null);
 
-	const [channel, setChannel] = useState<Channel | undefined>(undefined);
+	const [channel, setChannel] = useState<Channel | null>(null);
 
 	useEffect(() => {
 		if (!channelId) return;
@@ -54,7 +57,9 @@ export default function ChannelPage({
 			setMessages(msgs);
 		}
 
-		fetchMessages();
+		fetchMessages().catch((error) => {
+			console.error("Error fetching messages:", error);
+		});
 	}, [channelId]);
 
 	// Scroll to bottom whenever messages update
@@ -71,7 +76,7 @@ export default function ChannelPage({
 	// Memoize messages array to avoid unnecessary re-renders
 	const memoizedMessages = useMemo(
 		() => messages,
-		[messages, ...(messages?.map((m) => m.id) || [])],
+		[messages, ...(messages?.map((m) => m.id) ?? [])],
 	);
 
 	return (
