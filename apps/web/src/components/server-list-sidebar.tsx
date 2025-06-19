@@ -1,6 +1,13 @@
 "use client";
 
+import { client } from "@/lib/revolt";
 import { BugIcon, Home, MessagesSquare } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import Link from "next/link";
+import { Suspense, useEffect, useState } from "react";
+import type { Server } from "revolt.js";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Separator } from "./ui/separator";
 import {
 	Sidebar,
 	SidebarContent,
@@ -11,14 +18,7 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "./ui/sidebar";
-import Link from "next/link";
-import { Suspense, useEffect, useState } from "react";
-import type { Server } from "revolt.js";
-import { client } from "@/lib/revolt";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { AnimatePresence, motion } from "motion/react";
 import { Spinner } from "./ui/spinner";
-import { Separator } from "./ui/separator";
 
 export function ServerListSidebar() {
 	const [servers, setServers] = useState<Server[] | undefined>(undefined);
@@ -96,30 +96,16 @@ export function ServerListSidebar() {
 					<SidebarMenu>
 						<Suspense
 							fallback={
-								<AnimatePresence>
-									<SidebarMenuItem>
-										<motion.div
-											layout
-											initial={{ opacity: 0, y: 10 }}
-											animate={{ opacity: 1, y: 0 }}
-											exit={{ opacity: 0, y: 10 }}
-											transition={{
-												type: "spring",
-												stiffness: 120,
-												damping: 8,
-											}}
-										>
-											<SidebarMenuButton size="lg" asChild>
-												<Spinner />
-												<div className="grid flex-1 text-left text-sm leading-tight">
-													<span className="truncate font-medium text-muted-foreground">
-														Loading servers...
-													</span>
-												</div>
-											</SidebarMenuButton>
-										</motion.div>
-									</SidebarMenuItem>
-								</AnimatePresence>
+								<SidebarMenuItem>
+									<SidebarMenuButton size="lg" asChild>
+										<Spinner />
+										<div className="grid flex-1 text-left text-sm leading-tight">
+											<span className="truncate font-medium text-muted-foreground">
+												Loading servers...
+											</span>
+										</div>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
 							}
 						>
 							{servers?.length ? (
@@ -127,43 +113,30 @@ export function ServerListSidebar() {
 									{servers.map((server, index) => (
 										<SidebarMenuItem key={server.id}>
 											{index < 5 ? (
-												<motion.div
-													layout
-													initial={{ opacity: 0, y: 10 }}
-													animate={{ opacity: 1, y: 0 }}
-													exit={{ opacity: 0, y: 10 }}
-													transition={{
-														type: "spring",
-														stiffness: 120,
-														damping: 8,
-														delay: index * 0.1,
-													}}
+												<SidebarMenuButton
+													tooltip={server.name}
+													size="lg"
+													asChild
 												>
-													<SidebarMenuButton
-														tooltip={server.name}
-														size="lg"
-														asChild
-													>
-														<Link href={`/app/server/${server.id}`}>
-															<Avatar>
-																<AvatarImage
-																	src={server.iconURL || ""}
-																	alt={server.name}
-																	width={32}
-																	height={32}
-																/>
-																<AvatarFallback>
-																	{server.name.charAt(0).toUpperCase()}
-																</AvatarFallback>
-															</Avatar>
-															<div className="grid flex-1 text-left text-sm leading-tight">
-																<span className="truncate font-medium">
-																	{server.name}
-																</span>
-															</div>
-														</Link>
-													</SidebarMenuButton>
-												</motion.div>
+													<Link href={`/app/server/${server.id}`}>
+														<Avatar>
+															<AvatarImage
+																src={server.iconURL || ""}
+																alt={server.name}
+																width={32}
+																height={32}
+															/>
+															<AvatarFallback>
+																{server.name.charAt(0).toUpperCase()}
+															</AvatarFallback>
+														</Avatar>
+														<div className="grid flex-1 text-left text-sm leading-tight">
+															<span className="truncate font-medium">
+																{server.name}
+															</span>
+														</div>
+													</Link>
+												</SidebarMenuButton>
 											) : (
 												<SidebarMenuButton
 													tooltip={server.name}
@@ -195,25 +168,13 @@ export function ServerListSidebar() {
 								</AnimatePresence>
 							) : (
 								<SidebarMenuItem>
-									<motion.div
-										layout
-										initial={{ opacity: 0, y: 10 }}
-										animate={{ opacity: 1, y: 0 }}
-										exit={{ opacity: 0, y: 10 }}
-										transition={{
-											type: "spring",
-											stiffness: 120,
-											damping: 8,
-										}}
-									>
-										<SidebarMenuButton size="lg" asChild>
-											<div className="grid flex-1 text-left text-sm leading-tight">
-												<span className="truncate font-medium text-muted-foreground">
-													No servers found
-												</span>
-											</div>
-										</SidebarMenuButton>
-									</motion.div>
+									<SidebarMenuButton size="lg" asChild>
+										<div className="grid flex-1 text-left text-sm leading-tight">
+											<span className="truncate font-medium text-muted-foreground">
+												No servers found
+											</span>
+										</div>
+									</SidebarMenuButton>
 								</SidebarMenuItem>
 							)}
 						</Suspense>

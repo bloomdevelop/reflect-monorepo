@@ -1,10 +1,10 @@
-import { Geist } from "next/font/google";
 import type { Metadata } from "next";
+import { Geist } from "next/font/google";
 import "./globals.css";
-import { Client } from "revolt.js";
-import { Toaster } from "@/components/ui/sonner";
 import { ReactScan } from "@/components/react-scan";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { Client } from "revolt.js";
 
 export const metadata: Metadata = {
 	title: "Reflect",

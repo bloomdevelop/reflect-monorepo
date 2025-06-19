@@ -1,5 +1,10 @@
 "use client";
 
+import { client } from "@/lib/revolt";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import type { Channel, User } from "revolt.js";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
 	Sidebar,
 	SidebarContent,
@@ -8,11 +13,6 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "./ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { client } from "@/lib/revolt";
-import type { Channel, User } from "revolt.js";
 
 export default function DMSidebar() {
 	const [clientReady, setClientReady] = useState(false);
@@ -87,10 +87,16 @@ export default function DMSidebar() {
 														width={32}
 														height={32}
 													/>
-													<AvatarFallback>{recipient?.username?.[0]?.toUpperCase()}</AvatarFallback>
+													<AvatarFallback>
+														{recipient?.username?.[0]?.toUpperCase()}
+													</AvatarFallback>
 												</Avatar>
 												<div className="grid flex-1 text-left text-sm leading-tight">
-													<span className="truncate font-medium">{recipient?.displayName || recipient?.username || "Unknown User"}</span>
+													<span className="truncate font-medium">
+														{recipient?.displayName ||
+															recipient?.username ||
+															"Unknown User"}
+													</span>
 													<span className="text-xs text-muted-foreground truncate">
 														{dm.lastMessage?.content || "No messages yet"}
 													</span>

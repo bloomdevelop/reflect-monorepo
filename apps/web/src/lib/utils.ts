@@ -1,4 +1,4 @@
-import { clsx, type ClassValue } from "clsx";
+import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { client } from "./revolt";
 
@@ -24,10 +24,9 @@ export class CdnClass {
 	): Promise<string> {
 		try {
 			const formData = new FormData();
-			const blob =
-				new Blob([new Uint8Array(await file.arrayBuffer())]);
+			const blob = new Blob([new Uint8Array(await file.arrayBuffer())]);
 
-			formData.append("file", blob , filename);
+			formData.append("file", blob, filename);
 
 			if (!client.sessionToken) {
 				throw new Error("No session token");
@@ -36,7 +35,7 @@ export class CdnClass {
 			const res = await fetch(`${this.BASE_URL}/${tag}`, {
 				method: "POST",
 				headers: {
-					"X-Session-Token": client.sessionToken
+					"X-Session-Token": client.sessionToken,
 				},
 				body: formData,
 			});

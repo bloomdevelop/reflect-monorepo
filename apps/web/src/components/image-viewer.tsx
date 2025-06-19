@@ -2,21 +2,21 @@
 
 import type React from "react";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
-	X,
 	ChevronLeft,
 	ChevronRight,
-	ZoomIn,
-	ZoomOut,
-	RotateCw,
-	RefreshCw,
 	Download,
 	Maximize,
 	Minimize,
+	RefreshCw,
+	RotateCw,
+	X,
+	ZoomIn,
+	ZoomOut,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface ImageInfo {
 	url: string;
@@ -37,7 +37,7 @@ export function ImageViewer({
 	onOpenChange,
 }: EnhancedImageViewerProps) {
 	const [currentIndex, setCurrentIndex] = useState(initialIndex);
-	const currentImage = images[currentIndex] || { url: '', filename: '' };
+	const currentImage = images[currentIndex] || { url: "", filename: "" };
 	const { url: imageUrl, filename: fileName } = currentImage;
 
 	const onClose = useCallback(() => {
@@ -434,9 +434,9 @@ export function ImageViewer({
 			{/* Instructions */}
 			<div className="p-2 text-xs text-center text-muted-foreground bg-background/80 border-t">
 				<p>
-					{images.length > 1 && '← → to navigate • '}
-					Mouse wheel to zoom • Click and drag to pan • R to rotate •
-					F for fullscreen • 0 to reset • Esc to close
+					{images.length > 1 && "← → to navigate • "}
+					Mouse wheel to zoom • Click and drag to pan • R to rotate • F for
+					fullscreen • 0 to reset • Esc to close
 				</p>
 			</div>
 		</div>

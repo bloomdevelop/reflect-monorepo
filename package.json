@@ -6,6 +6,10 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "web:add": "pnpm --filter=web add",
+    "biome:lint": "pnpm --filter=web exec biome lint --write",
+    "biome:format": "pnpm --filter=web exec biome format --write",
+    "biome:check": "pnpm --filter=web exec biome check --write",
+    "biome:check:unsafe": "pnpm --filter=web exec biome check --write --unsafe",
     "revolt.js:build": "pnpm --filter=revolt.js build",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"

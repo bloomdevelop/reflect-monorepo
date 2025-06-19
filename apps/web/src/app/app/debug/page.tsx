@@ -12,9 +12,7 @@ export default function DebugPage() {
 			<Link href="/login">
 				<Button>Login</Button>
 			</Link>
-			<Button>
-                Open Settings
-            </Button>
+			<Button>Open Settings</Button>
 		</div>
 	);
 }

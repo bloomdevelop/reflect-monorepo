@@ -1,13 +1,27 @@
 {
 	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
 	"vcs": {
-		"enabled": false,
+		"enabled": true,
 		"clientKind": "git",
-		"useIgnoreFile": false
+		"useIgnoreFile": true
 	},
 	"files": {
-		"ignoreUnknown": false,
-		"ignore": []
+		"ignoreUnknown": true,
+		"ignore": [
+			"node_modules",
+			"dist",
+			"build",
+			"coverage",
+			".turbo",
+			".next",
+			".vercel",
+			".idea",
+			".vscode",
+			".git",
+			".github",
+			".DS_Store",
+			"components/ui/**"
+		]
 	},
 	"formatter": {
 		"enabled": true,

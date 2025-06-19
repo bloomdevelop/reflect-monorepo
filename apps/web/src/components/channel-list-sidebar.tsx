@@ -1,18 +1,9 @@
 "use client";
 
-import {
-	Sidebar,
-	SidebarContent,
-	SidebarGroup,
-	SidebarHeader,
-	SidebarMenu,
-	SidebarMenuItem,
-	SidebarMenuButton,
-} from "./ui/sidebar";
-import { useEffect, useState } from "react";
 import { client } from "@/lib/revolt";
-import type { Server, Channel } from "revolt.js";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import type { Channel, Server } from "revolt.js";
 import {
 	Accordion,
 	AccordionContent,
@@ -20,6 +11,15 @@ import {
 	AccordionTrigger,
 } from "./ui/accordion";
 import { Separator } from "./ui/separator";
+import {
+	Sidebar,
+	SidebarContent,
+	SidebarGroup,
+	SidebarHeader,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+} from "./ui/sidebar";
 
 export function ChannelListSidebar({ serverId }: { serverId: string }) {
 	const [server, setServer] = useState<Server | undefined>(undefined);

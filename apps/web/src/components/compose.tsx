@@ -1,19 +1,19 @@
 "use client";
 
-import { useRef, useState, useCallback, type ChangeEvent } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
-import { toast } from "sonner";
+import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUp, Paperclip, Plus, X } from "lucide-react";
+import Image from "next/image";
+import { type ChangeEvent, useCallback, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
+import { CdnClass } from "@/lib/utils";
+import type { Channel, Message } from "revolt.js";
 import { Button } from "./ui/button";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
 import { Input } from "./ui/input";
-import { CdnClass } from "@/lib/utils";
-import type { Channel, Message } from "revolt.js";
 
 const composeSchema = z.object({
 	content: z.string().optional(),
