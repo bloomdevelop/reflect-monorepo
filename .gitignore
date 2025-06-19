@@ -36,3 +36,14 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Codacy
+.codacy
+
+
+#Ignore vscode AI rules
+.github/copilot-instructions.md
+
+
+#Ignore windsurf AI rules
+.windsurfrules
