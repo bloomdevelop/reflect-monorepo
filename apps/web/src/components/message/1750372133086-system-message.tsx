@@ -56,18 +56,18 @@ function getUsername(systemMessage: SystemMessageType, id?: string) {
 	return (
 		(typeof usernameMap[`${id}_username`] === "string"
 			? (usernameMap[`${id}_username`] as string)
-			: undefined) ?? id
+			: undefined) || id
 	);
 }
 
 function getTextContent(systemMessage: SystemMessageType) {
-	return <MessageContent content={systemMessage.content ?? ""} />;
+	return <MessageContent content={systemMessage.content || ""} />;
 }
 
 function getUserJoinedContent(systemMessage: SystemMessageType) {
 	return (
 		<MessageContent
-			content={`${getUsername(systemMessage, systemMessage.userId) ?? "A user"} joined the server`}
+			content={`${getUsername(systemMessage, systemMessage.userId) || "A user"} joined the server`}
 		/>
 	);
 }
@@ -75,7 +75,7 @@ function getUserJoinedContent(systemMessage: SystemMessageType) {
 function getUserLeftContent(systemMessage: SystemMessageType) {
 	return (
 		<MessageContent
-			content={`${getUsername(systemMessage, systemMessage.userId) ?? "A user"} left the server`}
+			content={`${getUsername(systemMessage, systemMessage.userId) || "A user"} left the server`}
 		/>
 	);
 }
@@ -83,7 +83,7 @@ function getUserLeftContent(systemMessage: SystemMessageType) {
 function getUserKickedContent(systemMessage: SystemMessageType) {
 	return (
 		<MessageContent
-			content={`${getUsername(systemMessage, systemMessage.userId) ?? "A user"} was kicked from the server`}
+			content={`${getUsername(systemMessage, systemMessage.userId) || "A user"} was kicked from the server`}
 		/>
 	);
 }
@@ -91,7 +91,7 @@ function getUserKickedContent(systemMessage: SystemMessageType) {
 function getUserBannedContent(systemMessage: SystemMessageType) {
 	return (
 		<MessageContent
-			content={`${getUsername(systemMessage, systemMessage.userId) ?? "A user"} was banned from the server`}
+			content={`${getUsername(systemMessage, systemMessage.userId) || "A user"} was banned from the server`}
 		/>
 	);
 }
@@ -99,7 +99,7 @@ function getUserBannedContent(systemMessage: SystemMessageType) {
 function getUserAddedContent(systemMessage: SystemMessageType) {
 	return (
 		<MessageContent
-			content={`${getUsername(systemMessage, systemMessage.userId) ?? "A user"} was added to the server by ${getUsername(systemMessage, systemMessage.byId) ?? "someone"}`}
+			content={`${getUsername(systemMessage, systemMessage.userId) || "A user"} was added to the server by ${getUsername(systemMessage, systemMessage.byId) || "someone"}`}
 		/>
 	);
 }
@@ -107,7 +107,7 @@ function getUserAddedContent(systemMessage: SystemMessageType) {
 function getUserRemoveContent(systemMessage: SystemMessageType) {
 	return (
 		<MessageContent
-			content={`${getUsername(systemMessage, systemMessage.userId) ?? "A user"} was removed from the server by ${getUsername(systemMessage, systemMessage.byId) ?? "someone"}`}
+			content={`${getUsername(systemMessage, systemMessage.userId) || "A user"} was removed from the server by ${getUsername(systemMessage, systemMessage.byId) || "someone"}`}
 		/>
 	);
 }
@@ -115,7 +115,7 @@ function getUserRemoveContent(systemMessage: SystemMessageType) {
 function getChannelRenamedContent(systemMessage: SystemMessageType) {
 	return (
 		<MessageContent
-			content={`Channel was renamed to "${systemMessage.name ?? "(unknown)"}" by ${getUsername(systemMessage, systemMessage.byId) ?? "someone"}`}
+			content={`Channel was renamed to "${systemMessage.name || "(unknown)"}" by ${getUsername(systemMessage, systemMessage.byId) || "someone"}`}
 		/>
 	);
 }
@@ -123,7 +123,7 @@ function getChannelRenamedContent(systemMessage: SystemMessageType) {
 function getChannelDescriptionChangedContent(systemMessage: SystemMessageType) {
 	return (
 		<MessageContent
-			content={`Channel description was changed by ${getUsername(systemMessage, systemMessage.byId) ?? "someone"}`}
+			content={`Channel description was changed by ${getUsername(systemMessage, systemMessage.byId) || "someone"}`}
 		/>
 	);
 }
@@ -131,7 +131,7 @@ function getChannelDescriptionChangedContent(systemMessage: SystemMessageType) {
 function getChannelIconChangedContent(systemMessage: SystemMessageType) {
 	return (
 		<MessageContent
-			content={`Channel icon was changed by ${getUsername(systemMessage, systemMessage.byId) ?? "someone"}`}
+			content={`Channel icon was changed by ${getUsername(systemMessage, systemMessage.byId) || "someone"}`}
 		/>
 	);
 }
@@ -139,7 +139,7 @@ function getChannelIconChangedContent(systemMessage: SystemMessageType) {
 function getChannelOwnershipChangedContent(systemMessage: SystemMessageType) {
 	return (
 		<MessageContent
-			content={`Channel ownership was transferred from ${getUsername(systemMessage, systemMessage.fromId) ?? "someone"} to ${getUsername(systemMessage, systemMessage.toId) ?? "someone else"}`}
+			content={`Channel ownership was transferred from ${getUsername(systemMessage, systemMessage.fromId) || "someone"} to ${getUsername(systemMessage, systemMessage.toId) || "someone else"}`}
 		/>
 	);
 }
@@ -147,7 +147,7 @@ function getChannelOwnershipChangedContent(systemMessage: SystemMessageType) {
 function getMessagePinnedContent(systemMessage: SystemMessageType) {
 	return (
 		<MessageContent
-			content={`A message was pinned by ${getUsername(systemMessage, systemMessage.byId) ?? "someone"}`}
+			content={`A message was pinned by ${getUsername(systemMessage, systemMessage.byId) || "someone"}`}
 		/>
 	);
 }
@@ -155,7 +155,7 @@ function getMessagePinnedContent(systemMessage: SystemMessageType) {
 function getMessageUnpinnedContent(systemMessage: SystemMessageType) {
 	return (
 		<MessageContent
-			content={`A message was unpinned by ${getUsername(systemMessage, systemMessage.byId) ?? "someone"}`}
+			content={`A message was unpinned by ${getUsername(systemMessage, systemMessage.byId) || "someone"}`}
 		/>
 	);
 }
@@ -186,12 +186,12 @@ export function SystemMessageComponent({
 		return null;
 	}
 
-	const type = systemMessage?.type ?? "default";
+	const type = systemMessage?.type || "default";
 	const getContent = SYSTEM_MESSAGE_CONTENT_MAP[type];
 	const content = getContent ? getContent(systemMessage) : null;
 
 	const { icon, color } =
-		SYSTEM_MESSAGE_STYLES[type] || { icon: null, color: "" };
+		SYSTEM_MESSAGE_STYLES[type] || SYSTEM_MESSAGE_STYLES.default;
 
 	if (!content) {
 		return null;

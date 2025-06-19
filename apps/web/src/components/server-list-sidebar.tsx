@@ -2,7 +2,7 @@
 
 import { client } from "@/lib/revolt";
 import { BugIcon, Home, MessagesSquare } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import type { Server } from "revolt.js";

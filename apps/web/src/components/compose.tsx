@@ -173,7 +173,6 @@ export default function ComposeComponent({
 	const cdn = new CdnClass();
 	const [files, setFiles] = useState<FileWithPreview[]>([]);
 	const [showAttachments, setShowAttachments] = useState<boolean>(false);
-	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const form = useForm<z.infer<typeof composeSchema>>({
 		resolver: zodResolver(composeSchema),

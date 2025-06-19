@@ -21,8 +21,12 @@ export default function ChannelPage({
 		async function resolveParams() {
 			try {
 				const resolved = (params instanceof Promise ? await params : params)
-				.channelId;
-				if (!cancelled) setChannelId(resolved);
+					.channelId;
+				if (!cancelled) {
+					setChannelId(resolved);
+				} else {
+					console.warn("Channel ID resolution was cancelled");
+				}
 			} catch (error) {
 				console.error("Failed to resolve params:", error);
 			}
@@ -33,10 +37,10 @@ export default function ChannelPage({
 		};
 	}, [params]);
 
-	const [messages, setMessages] = useState<Message[] | undefined>(undefined);
+	const [messages, setMessages] = useState<Message[] | null>(null);
 	const bottomRef = useRef<HTMLDivElement | null>(null);
 
-	const [channel, setChannel] = useState<Channel | undefined>(undefined);
+	const [channel, setChannel] = useState<Channel | null>(null);
 
 	useEffect(() => {
 		if (!channelId) return;

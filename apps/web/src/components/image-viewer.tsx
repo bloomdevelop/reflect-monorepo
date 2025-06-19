@@ -37,7 +37,11 @@ export function ImageViewer({
 	onOpenChange,
 }: EnhancedImageViewerProps) {
 	const [currentIndex, setCurrentIndex] = useState(initialIndex);
-	const currentImage = images[currentIndex] || { url: "", filename: "" };
+	const safeIndex =
+		Number.isInteger(currentIndex) && currentIndex >= 0 && currentIndex < images.length
+			? currentIndex
+			: 0;
+	const currentImage = images[safeIndex] || { url: "", filename: "" };
 	const { url: imageUrl, filename: fileName } = currentImage;
 
 	const onClose = useCallback(() => {

@@ -1,6 +1,5 @@
 "use client";
 import { useLog } from "@/app/hooks/useLogContext";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { client } from "@/lib/revolt";
 import { Dot, Server as ServerIcon } from "lucide-react";
