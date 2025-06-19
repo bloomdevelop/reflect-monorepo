@@ -32,7 +32,13 @@
 		"enabled": true
 	},
 	"linter": {
-		"enabled": false
+		"enabled": true,
+		"rules": {
+			"suspicious": {
+				"noExplicitAny":"warn",
+				"noShadowRestrictedNames": "warn"
+			}
+		}
 	},
 	"javascript": {
 		"formatter": {

@@ -36,7 +36,12 @@ export default function ServerPage({
 	useEffect(() => {
 		async function fetchServer() {
 			addLog(`Fetching server with ID: ${serverId}`);
-			const server = client.servers.get(serverId!);
+			if (!serverId) {
+				addLog("No serverId provided, cannot fetch server.");
+				return;
+			}
+
+			const server = client.servers.get(serverId);
 			if (!server) return;
 
 			setServer(server);

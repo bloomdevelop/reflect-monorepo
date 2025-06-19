@@ -46,7 +46,11 @@ export default function ChannelPage({
 		if (!channelId) return;
 
 		async function fetchMessages() {
-			const id = channelId!;
+			const id = channelId;
+			if (!id) {
+				addLog("No channelId provided, cannot fetch messages.");
+				return;
+			}
 			addLog(`Fetching messages for channel ${id}`);
 			const channel = client.channels.get(id) as Channel;
 
