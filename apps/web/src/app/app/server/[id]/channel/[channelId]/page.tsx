@@ -1,5 +1,6 @@
 "use client";
 
+import { useLog } from "@/app/hooks/useLogContext";
 import ComposeComponent from "@/components/compose";
 import MessageComponent from "@/components/message-component";
 import { Spinner } from "@/components/ui/spinner";
@@ -12,6 +13,7 @@ export default function ChannelPage({
 }: {
 	params: { channelId: string } | Promise<{ channelId: string }>;
 }) {
+	const { addLog } = useLog();
 	const [channelId, setChannelId] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -37,18 +39,23 @@ export default function ChannelPage({
 
 		async function fetchMessages() {
 			const id = channelId as string;
+			addLog(`Fetching messages for channel ${id}`);
 			const channel = client.channels.get(id) as Channel;
 
 			if (!channel) return;
 
 			setChannel(channel);
 
+			addLog(`Fetched channel ${channel.name} (${channel.id})`);
 			const msgs = (await channel.fetchMessages({ limit: 100 })).reverse();
 			setMessages(msgs);
+			addLog(
+				`Fetched ${msgs.length} messages for channel ${channel.name} (${channel.id})`,
+			);
 		}
 
 		fetchMessages();
-	}, [channelId]);
+	}, [channelId, addLog]);
 
 	// Scroll to bottom whenever messages update
 
@@ -68,21 +75,21 @@ export default function ChannelPage({
 	);
 
 	return (
-		<div className="flex flex-col flex-1 h-full overflow-hidden">
-			<div className="flex-1 overflow-y-auto">
-				<Suspense
-					fallback={
-						<div className="flex items-center justify-center h-full">
-							<Spinner />
-						</div>
-					}
-				>
+		<div className="flex flex-col h-full overflow-x-hidden">
+			<Suspense
+				fallback={
+					<div className="flex items-center justify-center h-full">
+						<Spinner />
+					</div>
+				}
+			>
+				<div className="space-y-4 py-4">
 					{memoizedMessages?.map((message) => (
 						<MessageComponent key={message.id} message={message} />
 					))}
-					<div ref={bottomRef} />
-				</Suspense>
-			</div>
+					<div ref={bottomRef} className="h-4" />
+				</div>
+			</Suspense>
 			{channel && (
 				<ComposeComponent
 					channel={channel}

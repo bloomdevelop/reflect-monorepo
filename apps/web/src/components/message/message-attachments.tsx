@@ -51,24 +51,20 @@ export const MessageAttachments = memo(
 						{imageAttachments.map((attachment, index) => (
 							<div
 								key={attachment.id || index}
-								className="relative rounded-md w-fit overflow-hidden border border-border bg-muted/20 flex justify-center"
+								className="relative w-fit h-auto aspect-video max-w-full max-h-[400px] rounded-md overflow-hidden border border-border bg-muted/20 flex justify-center"
 							>
 								<Image
 									src={attachment.url}
 									alt={`Attachment ${index + 1}`}
-									width={
-										attachment.metadata?.type === "Image" ||
-										attachment.metadata?.type === "Video"
-											? attachment.metadata.width
-											: 400
-									}
-									height={
-										attachment.metadata?.type === "Image" ||
-										attachment.metadata?.type === "Video"
-											? attachment.metadata.height
-											: 300
-									}
-									className="max-h-[400px] w-fit object-contain rounded-md cursor-pointer"
+									width={300}
+									height={200}
+									style={{
+										objectFit: "contain",
+										width: "100%",
+										height: "100%",
+										maxHeight: "400px",
+									}}
+									className="rounded-md cursor-pointer"
 									onClick={(e) => {
 										e.stopPropagation();
 										handleImageClick(index);
@@ -88,7 +84,7 @@ export const MessageAttachments = memo(
 							return (
 								<div
 									key={attachment.id || index}
-									className="relative w-fit max-w-fit rounded-md overflow-hidden border border-border bg-muted/20 flex justify-center"
+									className="relative w-fit max-w-full rounded-md overflow-hidden border border-border bg-muted/20 flex justify-center"
 								>
 									<a
 										href={attachment.url}
@@ -96,7 +92,7 @@ export const MessageAttachments = memo(
 										rel="noopener noreferrer"
 										className="block p-3 bg-muted hover:bg-muted/80 transition-colors"
 									>
-										<div className="w-full p-3">
+										<div className="w-fit p-3">
 											<div className="font-medium">{fileName}</div>
 											<div className="text-xs text-muted-foreground">
 												{fileSize}

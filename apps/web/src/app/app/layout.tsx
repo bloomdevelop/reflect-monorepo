@@ -25,7 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 	});
 
 	return (
-		<SidebarProvider>
+		<SidebarProvider className="flex flex-row w-screen h-screen">
 			<ServerListSidebar />
 			<SidebarInset>
 				<main className="flex flex-col w-full h-screen overflow-hidden">

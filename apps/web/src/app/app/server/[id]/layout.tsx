@@ -15,7 +15,7 @@ export default async function ServerLayout({
 			<div className="flex-shrink-0 h-full border-r border-sidebar-border">
 				<ChannelListSidebar serverId={id} />
 			</div>
-			<div className="flex-1 min-w-0 min-h-0 overflow-auto">{children}</div>
+			<div className="flex-1 min-w-0 min-h-0">{children}</div>
 		</div>
 	);
 }

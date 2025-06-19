@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -9,6 +11,7 @@ import {
 import { client } from "@/lib/revolt";
 import { ShieldIcon, UsersIcon, ZapIcon } from "lucide-react";
 import Link from "next/link";
+import { useLog } from "@/app/hooks/useLogContext";
 
 type FeatureCardProps = {
 	icon: React.ReactNode;
@@ -51,11 +54,17 @@ function FeatureCard({ icon, title, description }: FeatureCardProps) {
 	);
 }
 
-export default function HomePage() {
-	const isLoggedIn = !!client.sessionToken;
 
-	return (
-		<div className="flex-1 h-full overflow-auto">
+export default function HomePage() {
+  const isLoggedIn = !!client.sessionToken;
+  const { addLog } = useLog();
+
+  function handleLogWelcome() {
+	addLog("Visited Home Page");
+  }
+
+  return (
+	<div className="flex-1 w-full h-full overflow-auto">
 			{/* Hero Section */}
 			<section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
 				<div className="container px-4 md:px-6">
@@ -69,6 +78,9 @@ export default function HomePage() {
 							</p>
 						</div>
 						<div className="space-x-4">
+						  <button type="button" className="px-3 py-1 rounded bg-neutral-800 text-neutral-100 text-xs" onClick={handleLogWelcome}>
+							Log Visit
+						  </button>
 							{isLoggedIn ? (
 								<Link href="/app/home">
 									<Button size="lg">Go to Home</Button>

@@ -1,4 +1,5 @@
 "use client";
+import { useLog } from "@/app/hooks/useLogContext";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { client } from "@/lib/revolt";
@@ -12,6 +13,7 @@ export default function ServerPage({
 }: {
 	params: { id: string } | Promise<{ id: string }>;
 }) {
+	const { addLog } = useLog();
 	const [serverId, setServerId] = useState<string | null>(null);
 	const [server, setServer] = useState<Server | undefined>(undefined);
 	const [memberCount, setMemberCount] = useState<number>(0);
@@ -30,22 +32,30 @@ export default function ServerPage({
 
 	useEffect(() => {
 		async function fetchServer() {
+			addLog(`Fetching server with ID: ${serverId}`);
 			const server = client.servers.get(serverId as string);
 			if (!server) return;
 
 			setServer(server);
+			addLog(`Fetched server: ${server.name} (${server.id})`);
+
 			// Get member count (optional, remove if not needed)
 			try {
+				addLog(`Fetching member count for server: ${server.name}`);
 				const members = await server.fetchMembers();
 				setMemberCount(members.members.filter((m) => m.user?.online).length);
+				addLog(
+					`Member count for server ${server.name}: ${members.members.length} (Online: ${members.members.filter((m) => m.user?.online).length})`,
+				);
 			} catch (err) {
 				console.error("Failed to fetch member count:", err);
+				addLog(`Failed to fetch member count for server ${server.name}`);
 			}
 		}
 		if (serverId) {
 			fetchServer();
 		}
-	}, [serverId]);
+	}, [serverId, addLog]);
 
 	if (!server) {
 		return (

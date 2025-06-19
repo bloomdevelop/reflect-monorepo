@@ -159,78 +159,87 @@ export const MessageEmbedComponent = memo(({ embed }: MessageEmbedProps) => {
 
 	return (
 		<div
-			className="my-2 rounded-md border border-l-4 border-border p-3"
+			className="my-2 rounded-md border-l-4 border-border p-3 overflow-hidden break-words"
 			style={getColorStyle()}
 		>
-			<div className="flex gap-3">
-				{content.iconUrl ? (
-					<EmbedIcon url={content.iconUrl} name={content.site || ""} />
-				) : (
-					<Globe />
-				)}
-				<div className="flex-grow min-w-0">
-					{/* Header section */}
-					<div className="flex flex-col gap-1">
+			<div className="flex flex-col gap-2">
+				<div className="flex items-start gap-2">
+					{(content.iconUrl || content.site) && (
+						content.iconUrl ? (
+								<EmbedIcon url={content.iconUrl} name={content.title || content.site || ""} />
+							) : (
+								<div className="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-muted rounded-sm">
+									<Globe size={16} />
+								</div>
+							)
+					)}
+
+					<div className="flex-1 min-w-0">
 						{content.title && (
-							<a
-								href={content.url}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="font-medium hover:underline line-clamp-1"
-							>
-								{content.title}
-							</a>
+							<h3 className="text-base font-medium break-words">
+								{content.url ? (
+									<a
+										href={content.url}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="hover:underline break-words"
+									>
+										{content.title}
+									</a>
+								) : (
+									content.title
+								)}
+							</h3>
 						)}
-						{content.description && (
-							<p className="text-sm text-muted-foreground line-clamp-3">
-								{content.description}
-							</p>
+
+						{content.site && !content.iconUrl && (
+							<div className="text-xs text-muted-foreground mt-0.5">
+								{content.site}
+							</div>
 						)}
 					</div>
-
-					{/* Media section */}
-					{hasMedia && (
-						<div className="mt-2">
-							{content.embedUrl ? (
-								<iframe
-									src={content.embedUrl}
-									allowFullScreen
-									className="w-full aspect-video rounded-md"
-									style={{ border: 0 }}
-									title={`${content.site || "Embedded"} content`}
-								/>
-							) : (
-								<EmbedMedia
-									url={
-										content.media?.url ||
-										content.video?.proxiedURL ||
-										content.url ||
-										""
-									}
-									width={
-										"width" in (content.media ?? {})
-											? (content.media as ImageEmbed).width
-											: content.video?.width
-									}
-									height={
-										"height" in (content.media ?? {})
-											? (content.media as ImageEmbed).height
-											: content.video?.height
-									}
-									size={(content.media as ImageEmbed)?.size}
-									previewUrl={content.video?.proxiedURL}
-								/>
-							)}
-						</div>
-					)}
-
-					{/* Site attribution */}
-					{content.site && (
-						<div className="mt-2 text-xs text-muted-foreground">
-							{content.site}
-						</div>
-					)}
 				</div>
+
+				{content.description && (
+					<div className="mt-1 text-sm text-muted-foreground break-words whitespace-pre-wrap">
+						{content.description}
+					</div>
+				)}
+
+				{hasMedia && (
+					<div className="mt-2 w-full overflow-hidden rounded-md">
+						{content.embedUrl ? (
+							<iframe
+								src={content.embedUrl}
+								allowFullScreen
+								className="w-full aspect-video rounded-md"
+								style={{ border: 0 }}
+								title={`${content.site || "Embedded"} content`}
+							/>
+						) : (
+							<EmbedMedia
+								url={
+									content.media?.url ||
+									content.video?.proxiedURL ||
+									content.url ||
+									""
+								}
+								width={
+									"width" in (content.media ?? {})
+										? (content.media as ImageEmbed).width
+										: content.video?.width
+								}
+								height={
+									"height" in (content.media ?? {})
+										? (content.media as ImageEmbed).height
+										: content.video?.height
+								}
+								size={(content.media as ImageEmbed)?.size}
+								previewUrl={content.video?.proxiedURL}
+							/>
+						)}
+					</div>
+				)}
 			</div>
 		</div>
 	);

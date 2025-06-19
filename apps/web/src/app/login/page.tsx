@@ -19,6 +19,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useLog } from "../hooks/useLogContext";
 
 const formSchema = z.object({
 	email: z.string(),
@@ -26,6 +27,7 @@ const formSchema = z.object({
 });
 
 export default function LoginPage() {
+	const { addLog } = useLog();
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -39,9 +41,11 @@ export default function LoginPage() {
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		toast.promise(
 			async () => {
+				addLog(`Attempting to log in with email: ${values.email}`);
 				setIsLoading(true);
 
 				try {
+
 					await client
 						.login({
 							email: values.email,
@@ -51,9 +55,10 @@ export default function LoginPage() {
 						.catch((error) => {
 							throw new Error(error);
 						});
-
+					addLog(`Logged in successfully with email: ${values.email}`);
 					client.connect();
-					console.log(`Your Username: ${client.sessionToken?.username}`);
+					addLog("Connected to Revolt WebSocket");
+					
 
 					setIsLoading(false);
 					return router.push("/app/home");
@@ -62,6 +67,7 @@ export default function LoginPage() {
 						toast.error(error.message);
 						console.log(error.message);
 					} else {
+						addLog("An unknown error occurred during login");
 						toast.error("An unknown error occurred");
 						console.log(error);
 					}
