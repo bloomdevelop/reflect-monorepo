@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUp, Paperclip, Plus, X } from "lucide-react";
 import Image from "next/image";
-import { type ChangeEvent, useCallback, useRef, useState } from "react";
+import { type ChangeEvent, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -24,7 +24,7 @@ type FileWithPreview = {
 	preview: string;
 };
 
-interface AttachmentsPreviewProps {
+type AttachmentsPreviewProps = {
 	files: FileWithPreview[];
 	onRemove: (index: number) => void;
 	onAdd: (files: FileList) => void;
@@ -106,7 +106,7 @@ const AttachmentsPreview = React.memo(
 											variant="destructive"
 											size="icon"
 											className="absolute -top-2 -right-2 opacity-0 group-hover/item:opacity-100 transition-opacity h-5 w-5 rounded-full shadow-md"
-											onClick={() => onRemove(index)}
+											onClick={() => {onRemove(index)}}
 										>
 											<X className="h-3 w-3" />
 										</Button>
@@ -189,20 +189,13 @@ export default function ComposeComponent({
 		setFiles((prev) => [...prev, ...newFiles]);
 	}, []);
 
-	const handleFileChange = useCallback(
-		(e: ChangeEvent<HTMLInputElement>) => {
-			if (e.target.files && e.target.files.length > 0) {
-				handleAddFiles(e.target.files);
-			}
-		},
-		[handleAddFiles],
-	);
-
 	const removeFile = useCallback((index: number) => {
 		setFiles((prev) => {
 			const newFiles = [...prev];
-			URL.revokeObjectURL(newFiles[index].preview);
-			newFiles.splice(index, 1);
+			if (index >= 0 && index < newFiles.length) {
+				URL.revokeObjectURL(newFiles[index].preview);
+				newFiles.splice(index, 1);
+			}
 			return newFiles;
 		});
 	}, []);
