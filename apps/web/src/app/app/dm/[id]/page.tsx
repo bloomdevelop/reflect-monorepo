@@ -24,7 +24,7 @@ export default function DmPage({
 				console.error("Failed to resolve params:", error);
 			}
 		}
-		resolveParams().catch((error) => {
+		resolveParams().catch((error: unknown) => {
 			console.error("Error resolving params:", error);
 		});
 
@@ -36,7 +36,7 @@ export default function DmPage({
 	const [messages, setMessages] = useState<Message[] | undefined>(undefined);
 	const bottomRef = useRef<HTMLDivElement | null>(null);
 
-	const [channel, setChannel] = useState<Channel | null>(null);
+	const [channel, setChannel] = useState<Channel>();
 
 	useEffect(() => {
 		if (!channelId) return;
@@ -57,7 +57,7 @@ export default function DmPage({
 			setMessages(msgs);
 		}
 
-		fetchMessages().catch((error) => {
+		fetchMessages().catch((error: unknown) => {
 			console.error("Error fetching messages:", error);
 		});
 	}, [channelId]);
