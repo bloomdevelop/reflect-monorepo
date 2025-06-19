@@ -1,5 +1,7 @@
 # Turborepo starter
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c8ce006094f14bdd884e33b0cc76e84c)](https://app.codacy.com/gh/bloomdevelop/reflect-monorepo?utm_source=github.com&utm_medium=referral&utm_content=bloomdevelop/reflect-monorepo&utm_campaign=Badge_Grade)
+
 This Turborepo starter is maintained by the Turborepo core team.
 
 ## Using this example
