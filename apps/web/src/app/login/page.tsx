@@ -15,7 +15,7 @@ import { client } from "@/lib/revolt";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -31,12 +31,16 @@ export default function LoginPage() {
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const form = useForm<z.infer<typeof formSchema>>({
+		mode: "onChange",
+		reValidateMode: "onChange",
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			email: "",
 			password: "",
 		},
 	});
+
+	const MemoizedInput = memo(Input);
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		toast.promise(
@@ -97,7 +101,7 @@ export default function LoginPage() {
 									<FormItem>
 										<FormLabel>Email</FormLabel>
 										<FormControl>
-											<Input
+											<MemoizedInput
 												type="email"
 												placeholder="example@domain.com"
 												{...field}
@@ -113,7 +117,7 @@ export default function LoginPage() {
 									<FormItem>
 										<FormLabel>Password</FormLabel>
 										<FormControl>
-											<Input
+											<MemoizedInput
 												placeholder="example123"
 												type="password"
 												{...field}
