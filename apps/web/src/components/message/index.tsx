@@ -1,5 +1,5 @@
 import { memo } from "react";
-import type { Message } from "revolt.js";
+import type { Message, MessageEmbed } from "revolt.js";
 import { MemoizedDiv } from "./memoized-div";
 import { MessageAttachments } from "./message-attachments";
 import { MessageAuthor } from "./message-author";
@@ -7,6 +7,26 @@ import { MessageContent } from "./message-content";
 import MessageEmbedComponent from "./message-embed";
 import { SystemMessageComponent } from "./system-message";
 import type { SystemMessageType } from "./types";
+
+function areEmbedsEqual(
+  prev: MessageEmbed[] = [],
+  next: MessageEmbed[] = []
+): boolean {
+  if (prev.length !== next.length) return false;
+  return prev.every((embed, i) => {
+    const other = next[i];
+    if (!other) return false;
+    // Compare by id if available, otherwise fallback to url or type
+    if ("id" in embed && "id" in other && embed.id && other.id) {
+      return embed.id === other.id;
+    }
+    if ("url" in embed && "url" in other && embed.url && other.url) {
+      return embed.url === other.url;
+    }
+    // Fallback: compare type and basic fields
+    return embed.type === other.type;
+  });
+}
 
 // Memoized component for message content to prevent unnecessary re-renders
 const MessageContentWrapper = memo(({ content }: { content: string }) => (
@@ -16,12 +36,7 @@ const MessageContentWrapper = memo(({ content }: { content: string }) => (
 ));
 MessageContentWrapper.displayName = "MessageContentWrapper";
 
-// Define embed type for better type safety
-interface EmbedType {
-  type: string;
-  url?: string;
-  // Add other embed properties as needed
-}
+interface EmbedType extends MessageEmbed {}
 
 // Memoized component for embeds
 const MessageEmbeds = memo(({ embeds, messageId }: { embeds?: EmbedType[], messageId: string }) => {
@@ -30,7 +45,7 @@ const MessageEmbeds = memo(({ embeds, messageId }: { embeds?: EmbedType[], messa
   return (
     <>
       {embeds.map((embed, index) => (
-        <div key={`${messageId}-embed-${embed.url || index}`} className="w-full min-w-0">
+        <div key={`${messageId}-embed-${'id' in embed && embed.id ? embed.id : index}`} className="w-full min-w-0">
           <MessageEmbedComponent embed={embed} />
         </div>
       ))}
@@ -39,14 +54,10 @@ const MessageEmbeds = memo(({ embeds, messageId }: { embeds?: EmbedType[], messa
 });
 MessageEmbeds.displayName = "MessageEmbeds";
 
-// Define attachment type for better type safety
-interface AttachmentType {
-  id: string;
-  // Add other attachment properties as needed
-}
+import type { File } from "revolt.js";
 
 // Memoized component for attachments
-const MessageAttachmentsWrapper = memo(({ attachments }: { attachments?: AttachmentType[] }) => {
+const MessageAttachmentsWrapper = memo(({ attachments }: { attachments?: File[] }) => {
   if (!attachments || attachments.length === 0) return null;
   
   return (
@@ -68,21 +79,9 @@ const areMessagesEqual = (prev: Message, next: Message): boolean => {
 };
 
 // Helper function to compare arrays of attachments
-const areAttachmentsEqual = (prev: AttachmentType[] = [], next: AttachmentType[] = []): boolean => {
+const areAttachmentsEqual = (prev: File[] = [], next: File[] = []): boolean => {
   if (prev.length !== next.length) return false;
   return !prev.some((att, i) => att.id !== next[i]?.id);
-};
-
-// Helper function to compare arrays of embeds
-const areEmbedsEqual = (prev: EmbedType[] = [], next: EmbedType[] = []): boolean => {
-  if (prev.length !== next.length) return false;
-  
-  return prev.every((embed, i) => {
-    const other = next[i];
-    return other && 
-           embed.type === other.type && 
-           (!embed.url || embed.url === other.url);
-  });
 };
 
 const MessageComponent = memo(
@@ -122,3 +121,4 @@ const MessageComponent = memo(
 MessageComponent.displayName = "MessageComponent";
 
 export default MessageComponent;
+
