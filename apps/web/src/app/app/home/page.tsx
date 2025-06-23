@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { client } from "@/lib/revolt";
 import { Mail, MessageCircle, Settings, UserCircle2 } from "lucide-react";
+import UserProfileDialog from "@/components/user-profile";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Channel, User } from "revolt.js";
@@ -25,6 +26,9 @@ export default function HomePage() {
 	const [dms, setDms] = useState<Channel[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [clientReady, setClientReady] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const [profileOpen, setProfileOpen] = useState(false);
+	const [selectedUserProfile, setSelectedUserProfile] = useState<User | null>(null);
 
 	useEffect(() => {
 		// Check if client is ready and authenticated
@@ -66,6 +70,7 @@ export default function HomePage() {
 				setFriends(friendsList);
 			} catch (err) {
 				console.error("Failed to fetch dashboard data:", err);
+				setError("Unable to load your data. Please try again.");
 			} finally {
 				setLoading(false);
 			}
@@ -121,6 +126,19 @@ export default function HomePage() {
 							<SkeletonItem />
 						</div>
 					</div>
+				</div>
+			</div>
+		);
+	}
+
+	// Show error state if data failed to load
+	if (error) {
+		return (
+			<div className="p-6 flex items-center justify-center h-[calc(100vh-4rem)]">
+				<div className="text-center space-y-4">
+					<h2 className="text-xl font-semibold">Something went wrong</h2>
+					<p className="text-muted-foreground">{error}</p>
+					<Button onClick={() => window.location.reload()}>Retry</Button>
 				</div>
 			</div>
 		);
@@ -244,9 +262,9 @@ export default function HomePage() {
 							</p>
 						) : (
 							friends.map((friend) => (
-								<div
+								<button
 									key={friend.id}
-									className="flex items-center justify-between p-3"
+									className="w-full flex items-center justify-between p-3 cursor-pointer hover:bg-muted/60 transition-colors" type="button" tabIndex={0} onClick={() => { setSelectedUserProfile(friend); setProfileOpen(true); }} onKeyDown={(e) => { if (e.key === 'Enter') { setSelectedUserProfile(friend); setProfileOpen(true); } }}
 								>
 									<div className="flex items-center gap-3">
 										<Avatar>
@@ -264,15 +282,24 @@ export default function HomePage() {
 											</p>
 										</div>
 									</div>
+									
 									<Button variant="ghost" size="sm">
 										<MessageCircle className="h-4 w-4" />
 									</Button>
-								</div>
+								</button>
 							))
 						)}
 					</div>
 				</div>
 			</div>
+			{selectedUserProfile && (
+				<UserProfileDialog
+					user={selectedUserProfile}
+					open={profileOpen}
+					onClose={() => setProfileOpen(false)}
+				/>
+			)}
 		</div>
 	);
+
 }

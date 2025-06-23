@@ -1,10 +1,12 @@
 "use client";
 import { useLog } from "@/app/hooks/useLogContext";
+import Markdown from "@/components/markdown/markdown";
 import { Skeleton } from "@/components/ui/skeleton";
 import { client } from "@/lib/revolt";
 import { Dot, Server as ServerIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import type { Server } from "revolt.js";
 
 export default function ServerPage({
@@ -137,7 +139,8 @@ export default function ServerPage({
 							<div className="font-medium">#{channel.name}</div>
 							{channel.description && (
 								<p className="text-sm text-muted-foreground truncate">
-									{channel.description}
+									{/* <Markdown content={channel.description} /> */}
+									<ReactMarkdown>{channel.description}</ReactMarkdown>
 								</p>
 							)}
 						</div>

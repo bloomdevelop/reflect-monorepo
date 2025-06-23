@@ -34,7 +34,7 @@
 		"enabled": true,
 		"rules": {
 			"suspicious": {
-				"noExplicitAny": "warn",
+				"noExplicitAny": "off",
 				"noShadowRestrictedNames": "warn"
 			},
 			"style": {
