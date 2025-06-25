@@ -34,6 +34,7 @@ import {
   Search,
   Bell,
   Lock,
+  LogInIcon,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -262,7 +263,7 @@ const FEATURES_BY_CATEGORY = features.reduce(
 
 export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [progress, setProgress] = useState(PROGRESS_PERCENTAGE); // Auto-calculated based on implemented features
+  const [progress, _setProgress] = useState(PROGRESS_PERCENTAGE); // Auto-calculated based on implemented features
 
   // Memoize filtered features to avoid expensive filtering on each render
   const filteredFeatures = useMemo(() => {
@@ -301,19 +302,8 @@ export default function HomePage() {
                 className="w-full sm:w-auto min-w-[140px] hover:scale-105 transition-transform"
                 aria-label="Get started with Reflect"
               >
-                Get Started
-                <Zap className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link href="/app">
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto min-w-[140px] hover:scale-105 transition-transform"
-                aria-label="Open Reflect app"
-              >
-                Open App
-                <MessageCircle className="ml-2 h-4 w-4" />
+                <LogInIcon />
+                Login
               </Button>
             </Link>
           </div>
@@ -534,29 +524,6 @@ export default function HomePage() {
           <p className="text-muted-foreground text-base mb-6">
             Built with ❤️ using Next.js, shadcn/ui, and modern web technologies
           </p>
-          <nav
-            className="flex justify-center gap-4"
-            aria-label="Footer navigation"
-          >
-            <Link href="/app">
-              <Button
-                variant="ghost"
-                size="lg"
-                className="hover:scale-105 transition-transform"
-              >
-                Launch App
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button
-                variant="ghost"
-                size="lg"
-                className="hover:scale-105 transition-transform"
-              >
-                Sign In
-              </Button>
-            </Link>
-          </nav>
         </footer>
       </div>
     </div>
