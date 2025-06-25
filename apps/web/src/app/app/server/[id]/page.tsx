@@ -139,8 +139,8 @@ export default function ServerPage({
 							<div className="font-medium">#{channel.name}</div>
 							{channel.description && (
 								<p className="text-sm text-muted-foreground truncate">
-									{/* <Markdown content={channel.description} /> */}
-									<ReactMarkdown>{channel.description}</ReactMarkdown>
+									<Markdown content={channel.description} />
+									{/* <ReactMarkdown>{channel.description}</ReactMarkdown> */}
 								</p>
 							)}
 						</div>

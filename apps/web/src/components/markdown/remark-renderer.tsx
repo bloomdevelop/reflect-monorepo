@@ -9,9 +9,9 @@ import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
 
-import { createElement, Fragment } from "react";
-import { memo } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, memo, useEffect, useMemo, useState } from "react";
+// @ts-expect-error: the react types are missing.
+import * as prod from "react/jsx-runtime";
 
 // @ts-expect-error no typings
 import rehypeKatex from "@revoltchat/rehype-katex";
@@ -75,11 +75,12 @@ const components = {
 	),
 	li: (props: any) => {
 		// If the className includes 'task-list-item', remove list style
-		const className = props.className || "";
+		const { className, ...otherProps } = props;
+		const isTaskItem = className?.includes("task-list-item");
 		return (
 			<li
-				className={className.includes("task-list-item") ? "list-none" : ""}
-				{...props}
+				className={`${className || ""}${isTaskItem ? " list-none" : ""}`.trim()}
+				{...otherProps}
 			/>
 		);
 	},
@@ -107,35 +108,38 @@ const components = {
  * Unified Markdown renderer
  */
 const render = unified()
-  .use(remarkParse)
-  .use(remarkBreaks)
-  .use(remarkGfm)
-  .use(remarkMath)
-  .use(remarkSpoiler)
-  .use(remarkChannels)
-  .use(remarkTimestamps)
-  .use(remarkEmoji)
-  .use(remarkMention)
-  .use(remarkHtmlToText)
-  .use(remarkRehype, {
-	handlers,
-  })
-  .use(rehypeKatex, {
-	maxSize: 10,
-	maxExpand: 0,
-	maxLength: 512,
-	trust: false,
-	strict: false,
-	output: "html",
-	throwOnError: false,
-	errorColor: "var(--error)",
-  })
-  .use(rehypePrism)
-  .use(rehypeReact, {
-	Fragment,
-	jsx: true,
-	components,
-  });
+	.use(remarkParse)
+	.use(remarkBreaks)
+	.use(remarkGfm)
+	.use(remarkMath)
+	.use(remarkSpoiler)
+	.use(remarkChannels)
+	.use(remarkTimestamps)
+	.use(remarkEmoji)
+	.use(remarkMention)
+	.use(remarkHtmlToText)
+	.use(remarkRehype, {
+		handlers,
+	})
+	.use(rehypeKatex, {
+		maxSize: 10,
+		maxExpand: 0,
+		maxLength: 512,
+		trust: false,
+		strict: false,
+		output: "html",
+		throwOnError: false,
+		errorColor: "var(--error)",
+	})
+	.use(rehypePrism)
+	.use(rehypeReact, {
+		Fragment,
+		// @ts-expect-error: the react types are missing.
+		jsx: prod.jsx,
+		// @ts-expect-error: the react types are missing.
+		jsxs: prod.jsxs,
+		components,
+	});
 
 /**
  * Markdown parent container
@@ -220,69 +224,85 @@ function sanitise(content: string) {
  * Remark renderer component
  */
 // Error boundary component
-class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
+class ErrorBoundary extends React.Component<
+	{ children: React.ReactNode },
+	{ hasError: boolean }
+> {
+	constructor(props: { children: React.ReactNode }) {
+		super(props);
+		this.state = { hasError: false };
+	}
 
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
+	static getDerivedStateFromError() {
+		return { hasError: true };
+	}
 
-  render() {
-    if (this.state.hasError) {
-      return <span>Error rendering content</span>;
-    }
-    return this.props.children;
-  }
+	render() {
+		if (this.state.hasError) {
+			return <span>Error rendering content</span>;
+		}
+		return this.props.children;
+	}
 }
 
-export default memo(function RemarkRenderer({ content, disallowBigEmoji }: MarkdownProps) {
-  const sanitisedContent = useMemo(() => sanitise(content), [content]);
-  const [Content, setContent] = useState<React.ReactNode>(null);
-  const [error, setError] = useState<Error | null>(null);
+type RenderState =
+	| { status: "pending" }
+	| { status: "success"; value: React.ReactNode }
+	| { status: "error"; error: Error };
 
-  useEffect(() => {
-    let cancelled = false;
-    
-    const processContent = async () => {
-      try {
-        const result = await render.process(sanitisedContent);
-        if (!cancelled) {
-          setContent(result.result as React.ReactNode);
-          setError(null);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          console.error('Error rendering markdown:', err);
-          setError(err instanceof Error ? err : new Error('Failed to render content'));
-          setContent(sanitisedContent || 'Message failed to render.');
-        }
-      }
-    };
+export default memo(function RemarkRenderer({
+	content,
+	disallowBigEmoji,
+}: MarkdownProps) {
+	const sanitisedContent = useMemo(() => sanitise(content), [content]);
+	const [renderState, setRenderState] = useState<RenderState>({
+		status: "pending",
+	});
 
-    processContent();
-    
-    return () => { cancelled = true; };
-  }, [sanitisedContent]);
+	useEffect(() => {
+		let cancelled = false;
+		setRenderState({ status: "pending" });
 
-  const largeEmoji = useMemo(
-    () => !disallowBigEmoji && isOnlyEmoji(content ?? ""),
-    [content, disallowBigEmoji],
-  );
+		render
+			.process(sanitisedContent)
+			.then((result) => {
+				if (!cancelled) {
+					setRenderState({
+						status: "success",
+						value: result.result as React.ReactNode,
+					});
+				}
+			})
+			.catch((err) => {
+				if (!cancelled) {
+					console.error("Error rendering markdown:", err);
+					const error =
+						err instanceof Error ? err : new Error("Failed to render content");
+					setRenderState({ status: "error", error });
+				}
+			});
 
-  return (
-    <ErrorBoundary>
-      <Container largeEmoji={largeEmoji}>
-        {error ? (
-          <div className="text-red-500">Error: {error.message}</div>
-        ) : Content === null ? (
-          <span className="opacity-50">Loading content...</span>
-        ) : (
-          Content
-        )}
-      </Container>
-    </ErrorBoundary>
-  );
+		return () => {
+			cancelled = true;
+		};
+	}, [sanitisedContent]);
+
+	const largeEmoji = useMemo(
+		() => !disallowBigEmoji && isOnlyEmoji(content ?? ""),
+		[content, disallowBigEmoji],
+	);
+
+	return (
+		<ErrorBoundary>
+			<Container largeEmoji={largeEmoji}>
+				{renderState.status === "pending" && (
+					<span className="opacity-50">Loading content...</span>
+				)}
+				{renderState.status === "error" && (
+					<div className="text-red-500">Error: {renderState.error.message}</div>
+				)}
+				{renderState.status === "success" && renderState.value}
+			</Container>
+		</ErrorBoundary>
+	);
 });
