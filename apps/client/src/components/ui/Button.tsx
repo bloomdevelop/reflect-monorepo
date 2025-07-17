@@ -1,3 +1,4 @@
+import { Icon } from "@iconify-icon/solid";
 import { JSX, splitProps } from "solid-js";
 import { cn } from "~/lib/styling";
 
@@ -6,6 +7,8 @@ interface ButtonProps {
   onClick?: () => void;
   type?: HTMLButtonElement["type"];
   class?: string;
+  loading?: boolean;
+  disabled?: boolean;
   variant: "primary" | "secondary" | "danger";
 }
 
@@ -14,7 +17,8 @@ export default function Button(props: ButtonProps) {
   return (
     <button
       class={cn(
-        "px-4 py-2 rounded-md text-lg transition-all",
+        "flex flex-row gap-2 px-4 py-2 rounded-md text-lg transition-all",
+        "justify-center items-center",
         "focus:outline-none focus:ring-2",
         other.variant === "primary" &&
           "bg-blue-500 text-white hover:bg-blue-700 ring-blue-500/50",
@@ -22,11 +26,14 @@ export default function Button(props: ButtonProps) {
           "bg-gray-500 text-white hover:bg-gray-700 ring-gray-500/50",
         other.variant === "danger" &&
           "bg-red-500 text-white hover:bg-red-700 ring-red-500/50",
+          other.loading && "cursor-not-allowed opacity-50",
         other.class
       )}
       onClick={local.onClick}
       type={local.type}
+      disabled={other.loading || other.disabled}
     >
+      {other.loading && <Icon class="animate-spin" icon="material-symbols:rotate-right-rounded" />}
       {local.children}
     </button>
   );
