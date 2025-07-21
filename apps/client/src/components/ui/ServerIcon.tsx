@@ -14,7 +14,8 @@ export default function ServerIcon(props: ServerIconProps) {
             "flex items-center justify-center",
             "overflow-hidden"
         )}>
-            <img src={props.server.iconURL} class="object-cover"/>
+            {props.server.iconURL ? <img src={props.server.iconURL} class="object-cover"/> : <span>{props.server.name.substring(0,1)}</span>}
+            
         </A>
     )
 }

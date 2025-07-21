@@ -1,9 +1,10 @@
 import { Icon } from "@iconify-icon/solid";
-import { JSX, splitProps } from "solid-js";
+import { JSX, Match, splitProps, Switch } from "solid-js";
 import { cn } from "~/lib/styling";
 
 interface ButtonProps {
   children: JSX.Element;
+  icon?: JSX.Element;
   onClick?: () => void;
   type?: HTMLButtonElement["type"];
   class?: string;
@@ -13,7 +14,12 @@ interface ButtonProps {
 }
 
 export default function Button(props: ButtonProps) {
-  const [local, other] = splitProps(props, ["children", "onClick", "type"]);
+  const [local, other] = splitProps(props, [
+    "icon",
+    "children",
+    "onClick",
+    "type",
+  ]);
   return (
     <button
       class={cn(
@@ -26,14 +32,23 @@ export default function Button(props: ButtonProps) {
           "bg-gray-500 text-white hover:bg-gray-700 ring-gray-500/50",
         other.variant === "danger" &&
           "bg-red-500 text-white hover:bg-red-700 ring-red-500/50",
-          other.loading && "cursor-not-allowed opacity-50",
+        other.loading && "cursor-not-allowed opacity-50",
         other.class
       )}
       onClick={local.onClick}
       type={local.type}
       disabled={other.loading || other.disabled}
     >
-      {other.loading && <Icon class="animate-spin" icon="material-symbols:rotate-right-rounded" />}
+      <Switch>
+        <Match when={local.icon && !other.loading}>{local.icon}</Match>
+        <Match when={other.loading}>
+          <Icon
+            class="animate-spin"
+            icon="material-symbols:rotate-right-rounded"
+          />
+        </Match>
+      </Switch>
+
       {local.children}
     </button>
   );
