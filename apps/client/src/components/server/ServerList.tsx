@@ -1,7 +1,7 @@
 import { For, Suspense } from "solid-js";
 import { useLocation, useNavigate } from "@solidjs/router";
 import { Server } from "revolt.js";
-import ServerIcon from "../ServerIcon";
+import ServerIcon from "./ServerIcon";
 import { Fab } from "@suid/material";
 import { Icon } from "@iconify-icon/solid";
 
@@ -20,11 +20,11 @@ export default function ServerList(props: ServerListProps) {
 
   return (
     <Suspense>
-      <Fab color={active("/app/home") ? "primary" : "default"} onClick={navigateHome}>
+      <Fab color={active("/app/home") ? "primary" : "default"} tabIndex={1} onClick={navigateHome}>
         <Icon icon="material-symbols:home-rounded" class="text-2xl" />
       </Fab>
       <For each={props.servers}>
-        {(server) => <ServerIcon server={server} />}
+        {(server, index) => <ServerIcon server={server} tabIndex={index() + 1} />}
       </For>
     </Suspense>
   );

@@ -34,7 +34,7 @@ export default function ConnectionStatus() {
         return (
       <Alert severity="error" square action={
         <Button color="inherit" size="small" onClick={() => {
-            if (!client.sessionToken) {
+            if (!sessionStorage.getItem("session")) {
                 navigate("/login");
             } else {
                 client.connect();

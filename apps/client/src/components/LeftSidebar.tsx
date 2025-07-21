@@ -21,9 +21,10 @@ export default function LeftSidebar(props: LeftSidebarProps) {
   const [currentServer, setCurrentServer] = createSignal<string | undefined>();
 
   createEffect(() => {
-    if (local.pathname.match(/\/server\/[A-Za-z0-9]+$/)) {
-      const serverId = local.pathname.match(/\/server\/([A-Za-z0-9]+)$/)?.[1];
-      setCurrentServer(serverId);
+    const segments = local.pathname.split('/');
+    const serverIndex = segments.findIndex(seg => seg === 'server');
+    if (serverIndex !== -1 && segments[serverIndex + 1]) {
+      setCurrentServer(segments[serverIndex + 1]);
     } else {
       setCurrentServer(undefined);
     }

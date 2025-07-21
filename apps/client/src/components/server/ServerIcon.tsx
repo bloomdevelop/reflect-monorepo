@@ -5,6 +5,7 @@ import { createEffect, createSignal } from "solid-js";
 
 interface ServerIconProps {
   server: Server | undefined;
+  tabIndex: number;
 }
 
 export default function ServerIcon(props: ServerIconProps) {
@@ -14,9 +15,9 @@ export default function ServerIcon(props: ServerIconProps) {
   const navigate = useNavigate();
 
   createEffect(() => {
-    const serverRegex = /\/server\/([A-Za-z0-9]+)$/;
-    const match = serverRegex.exec(location.pathname);
-    if (match && match[1] === props.server?.id) {
+    const segments = location.pathname.split('/');
+    const serverIndex = segments.findIndex(seg => seg === 'server');
+    if (serverIndex !== -1 && segments[serverIndex + 1] === props.server?.id) {
       setActive(true);
     } else {
       setActive(false);
@@ -33,6 +34,7 @@ export default function ServerIcon(props: ServerIconProps) {
       color={active() ? "primary" : "default"}
       sx={{ width: "60px", height: "60px", p: 0.5 }}
       size="small"
+      tabIndex={props.tabIndex}
     >
       {props.server.iconURL ? (
         <img src={props.server.iconURL} class="object-cover rounded-full" />

@@ -86,7 +86,7 @@ export default function AppLayout(props: RouteSectionProps) {
               id="middle"
             >
               <OutletToolbar />
-              <main class="p-4">{props.children}</main>
+              <main class="flex-1 flex flex-col overflow-y-auto">{props.children}</main>
             </Splitter.Panel>
           </Splitter.Root>
         </main>

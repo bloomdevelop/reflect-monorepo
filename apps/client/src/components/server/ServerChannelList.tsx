@@ -1,4 +1,5 @@
 import { Icon } from "@iconify-icon/solid";
+import { useNavigate } from "@solidjs/router";
 import {
   List,
   ListItem,
@@ -11,9 +12,11 @@ import { Channel, Server } from "revolt.js";
 import { For, Match, Switch} from "solid-js";
 
 function ChannelListItem(props: { channel: Channel }) {
+  const navigate = useNavigate();
+
   return (
     <ListItem disablePadding>
-      <ListItemButton>
+      <ListItemButton onClick={() => navigate(`/app/server/${props.channel.serverId}/channel/${props.channel.id}`)}>
         <ListItemIcon>
           <Switch>
             <Match when={props.channel.type === "TextChannel"}>
