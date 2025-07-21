@@ -7,7 +7,10 @@ import {
   splitProps,
   Switch,
 } from "solid-js";
-import { cn } from "~/lib/styling";
+import { borderStyles, cn } from "~/lib/styling";
+import { useTheme } from "@suid/material/styles";
+import ServerUI from "./server/ServerUI";
+import { defaultTheme } from "~/lib/themes";
 
 interface LeftSidebarProps {
   pathname: string;
@@ -25,15 +28,20 @@ export default function LeftSidebar(props: LeftSidebarProps) {
       setCurrentServer(undefined);
     }
   });
+  const theme = useTheme(defaultTheme);
+  const mode = theme.palette.mode;
+
   return (
     <Splitter.Panel
-      class={cn("border-l-2", "p-4 border-gray-500/50")}
+      class={cn("h-screen", "border-l-2")}
+      style={{
+        "border-color": borderStyles[mode].default,
+      }}
       id="left"
     >
       <Switch>
         <Match when={currentServer()}>
-          <p>Current Server: {currentServer()}</p>
-          <p>Server UI goes here</p>
+          <ServerUI serverId={currentServer()!} />
         </Match>
         <Match when={!currentServer()}>
           <p>Direct Message UI goes here</p>

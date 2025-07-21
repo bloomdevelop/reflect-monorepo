@@ -1,19 +1,24 @@
 import { Splitter } from "@ark-ui/solid";
-import { Icon } from "@iconify-icon/solid";
-import { A, useNavigate, type RouteSectionProps } from "@solidjs/router";
-import { ConnectionState, Server } from "revolt.js";
-import { createEffect, createSignal, For, Suspense } from "solid-js";
+import type { RouteSectionProps } from "@solidjs/router";
+import { CssBaseline, ThemeProvider } from "@suid/material";
+import { Server } from "revolt.js";
+import { createEffect, createSignal } from "solid-js";
 import LeftSidebar from "~/components/LeftSidebar";
-import IconButton from "~/components/ui/IconButton";
-import MobileWarning from "~/components/ui/MobileWarning";
-import ServerIcon from "~/components/ui/ServerIcon";
+import MobileWarning from "~/components/MobileWarning";
+import ServerList from "~/components/server/ServerList";
 import { client } from "~/lib/revolt";
-import { cn } from "~/lib/styling";
+import { borderStyles, cn } from "~/lib/styling";
+import { defaultTheme } from "~/lib/themes";
+import { useTheme } from "@suid/material/styles";
+import OutletToolbar from "~/components/Toolbar";
+import ConnectionStatus from "~/components/ConnectionStatus";
 
 export default function AppLayout(props: RouteSectionProps) {
+  const theme = useTheme(defaultTheme);
+  const mode = theme.palette.mode;
   const [isCollapsed, setIsCollapsed] = createSignal<boolean>(false);
+  const [isDragging, setIsDragging] = createSignal<boolean>(false);
   const [servers, setServers] = createSignal<Server[]>([]);
-  const navigate = useNavigate();
 
   createEffect(() => {
     function getServers() {
@@ -25,25 +30,16 @@ export default function AppLayout(props: RouteSectionProps) {
   });
 
   return (
-    <>
+    <ThemeProvider theme={defaultTheme}>
+      <CssBaseline enableColorScheme />
       <MobileWarning />
-      <div class="w-full !h-screen flex flex-col">
-        {client.events.state() === ConnectionState.Idle ||
-        client.events.state() === ConnectionState.Disconnected ? (
-          <div class="bg-red-500/30 text-center py-2">Not Connected</div>
-        ) : null}
-        <main class="flex-1 flex flex-row">
+      <div class="w-full h-screen flex flex-col overflow-hidden">
+        <div class="flex-none w-full">
+          <ConnectionStatus />
+        </div>
+        <main class="flex-1 flex flex-row overflow-auto">
           <div class="flex flex-col gap-2 items-center flex-1 max-w-24 pt-4">
-            <A href="/app/home">
-              <IconButton variant="secondary" size="lg">
-                <Icon icon="material-symbols:home" class="text-xl" />
-              </IconButton>
-            </A>
-            <Suspense>
-              <For each={servers()}>
-                {(server) => <ServerIcon server={server} />}
-              </For>
-            </Suspense>
+            <ServerList servers={servers()} />
           </div>
           <Splitter.Root
             class="flex-1 flex flex-row"
@@ -53,12 +49,14 @@ export default function AppLayout(props: RouteSectionProps) {
             onExpand={() => {
               setIsCollapsed(false);
             }}
+            onResizeStart={() => setIsDragging(true)}
+            onResizeEnd={() => setIsDragging(false)}
             defaultSize={[20, 80]}
             panels={[
               {
                 id: "left",
                 collapsible: true,
-                minSize: 10,
+                minSize: 15,
                 maxSize: 75,
                 collapsedSize: 0,
               },
@@ -69,35 +67,30 @@ export default function AppLayout(props: RouteSectionProps) {
               },
             ]}
           >
-            {!isCollapsed() && <LeftSidebar pathname={props.location.pathname} />}
+            {!isCollapsed() && (
+              <LeftSidebar pathname={props.location.pathname} />
+            )}
 
             <Splitter.ResizeTrigger
-              class={cn(
-                "transition-colors",
-                "flex-1",
-                "w-0.5",
-                "bg-gray-500/50",
-                "hover:bg-blue-500/50",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
-              )}
+              class={cn("transition-colors", "flex-1", "w-0.5", "outline-none")}
+              style={{
+                "background-color": isDragging()
+                  ? borderStyles[mode].focus
+                  : borderStyles[mode].default,
+              }}
               id="left:middle"
               aria-label="Resize"
             />
             <Splitter.Panel
-              class={cn(
-                "border-gray-500/50",
-                "flex-1 flex flex-col"
-              )}
+              class={cn("border-gray-500/50", "flex-1 flex flex-col")}
               id="middle"
             >
-              <div class="border-b-2 px-2 py-1 border-gray-500/50 shadow-md">
-                Pathname: {props.location.pathname}
-              </div>
+              <OutletToolbar />
               <main class="p-4">{props.children}</main>
             </Splitter.Panel>
           </Splitter.Root>
         </main>
       </div>
-    </>
+    </ThemeProvider>
   );
 }

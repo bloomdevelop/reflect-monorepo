@@ -1,67 +1,79 @@
-import { createForm, FormError, SubmitHandler } from "@modular-forms/solid";
-import { useNavigate } from "@solidjs/router";
-import Button from "~/components/ui/Button";
-import { Card, CardContent, CardHeader } from "~/components/ui/Card";
-import { TextInput } from "~/components/ui/ModularFormsInput";
+import { Box, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Stack, TextField } from "@suid/material";
+import { createSignal } from "solid-js";
 import { client } from "~/lib/revolt";
-
-type LoginForm = {
-    email: string,
-    password: string
-}
+import { useNavigate } from "@solidjs/router";
 
 export default function LoginPage() {
-    const [loginForm, {Form, Field}] = createForm<LoginForm>();
     const navigate = useNavigate();
+    const [email, setEmail] = createSignal<string>("");
+    const [password, setPassword] = createSignal<string>("");
+    const [loading, setLoading] = createSignal<boolean>(false);
 
-    const handleSubmit: SubmitHandler<LoginForm> = async (values, _) => {
+    const handleSubmit = async (e: Event) => {
+        e.preventDefault();
+        setLoading(true);
+
         try {
             await client.login({
-                email: values.email,
-                password: values.password
-            }).catch((err) => {
-                throw new FormError<LoginForm>("Something went wrong.", err)
-            })
-
-            navigate("/app/home");
+                email: email(),
+                password: password()
+            }).then(() => {
+                navigate("/app/home");
+            });
         } catch (err) {
-            console.error(err)
+            console.error(err);
+            setLoading(false);
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
-        <div class="flex flex-col justify-center items-center h-screen">
+        <div class="flex flex-col items-center justify-center h-screen">
             <Card>
-                <CardHeader>
-                    Let's get you logged in
-                </CardHeader>
-                <CardContent>
-                    <Form onSubmit={handleSubmit} class="flex flex-col gap-4">
-                        <Field name="email">
-                            {(field, props) => (
-                                <TextInput
-                                    {...props}
-                                    {...field}
-                                    type="email"
-                                    placeholder="Email"
+                <CardHeader title="Login" />
+                <form onSubmit={handleSubmit}>
+                    <CardContent>
+                        <Stack gap={2}>
+                            <TextField
+                                label="Email"
+                                type="email"
+                                value={email()}
+                                onChange={(e) => setEmail(e.currentTarget.value)}
+                            />
+                            <TextField
+                                label="Password"
+                                type="password"
+                                value={password()}
+                                onChange={(e) => setPassword(e.currentTarget.value)}
+                            />
+                        </Stack>
+                    </CardContent>
+                    <CardActions>
+                        <Box
+                            sx={{
+                                m: 1,
+                                position: "relative",
+                            }}
+                        >
+                            <Button disabled={loading()} variant="contained" type="submit">
+                                Login
+                            </Button>
+                            {loading() && (
+                                <CircularProgress
+                                    size={24}
+                                    sx={{
+                                        position: "absolute",
+                                        top: "50%",
+                                        left: "50%",
+                                        marginTop: "-12px",
+                                        marginLeft: "-12px",
+                                    }}
                                 />
                             )}
-                        </Field>
-                        <Field name="password">
-                            {(field, props) => (
-                                <TextInput
-                                    {...props}
-                                    {...field}
-                                    type="password"
-                                    placeholder="Password"
-                                />
-                            )}
-                        </Field>
-                        <Button loading={loginForm.submitting} disabled={loginForm.submitting} type="submit" variant="primary">
-                            Login
-                        </Button>
-                    </Form>
-                </CardContent>
+                        </Box>
+                    </CardActions>
+                </form>
             </Card>
         </div>
     )
