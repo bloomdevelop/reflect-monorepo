@@ -1,10 +1,11 @@
 "use client";
 
+import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { ArrowUp, Paperclip, Plus, X } from "lucide-react";
 import Image from "next/image";
-import { type ChangeEvent, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -13,7 +14,6 @@ import { CdnClass } from "@/lib/utils";
 import type { Channel, Message } from "revolt.js";
 import { Button } from "./ui/button";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
-import { Input } from "./ui/input";
 
 const composeSchema = z.object({
   content: z.string().optional(),
@@ -30,7 +30,6 @@ type AttachmentsPreviewProps = {
   onAdd: (files: FileList) => void;
 };
 
-import React from "react";
 
 const AttachmentsPreview = React.memo(
   ({ files, onRemove, onAdd }: AttachmentsPreviewProps) => {
@@ -76,10 +75,10 @@ const AttachmentsPreview = React.memo(
           damping: 25,
           mass: 1,
         }}
-        className="w-full backdrop-blur-md"
+        className="w-3/4 mx-auto !z-1"
       >
         <div
-          className={`w-full p-4 border-t border-border transition-colors max-h-56 overflow-auto ${
+          className={`w-full p-4 border rounded-lg shadow-md transition-colors max-h-56 overflow-auto ${
             isDragging
               ? "border-primary bg-primary/10"
               : "border-border bg-muted/50"
@@ -116,7 +115,7 @@ const AttachmentsPreview = React.memo(
                       type="button"
                       variant="destructive"
                       size="icon"
-                      className="absolute -top-2 -right-2 opacity-0 transition-opacity duration-200 ease-in-out group-hover/item:opacity-100 backdrop-blur-md h-5 w-5 rounded-full shadow-md"
+                      className="absolute -top-2 -right-2 opacity-100 transition-opacity duration-200 ease-in-out group-hover/item:opacity-100 backdrop-blur-md h-5 w-5 rounded-full shadow-md"
                       onClick={() => {
                         onRemove(index);
                       }}
@@ -178,7 +177,7 @@ const AttachmentsPreview = React.memo(
         </div>
       </motion.div>
     );
-  },
+  }
 );
 
 export default function ComposeComponent({
@@ -231,7 +230,7 @@ export default function ComposeComponent({
           try {
             const imageId = await cdn.uploadFile(
               "attachments",
-              fileWithPreview.file,
+              fileWithPreview.file
             );
             toast.info("File uploaded successfully", { description: imageId });
             return imageId;
@@ -252,7 +251,7 @@ export default function ComposeComponent({
 
         // Wait for all uploads to complete and filter out any failed uploads
         const uploadedIds = (await Promise.all(uploadPromises)).filter(
-          Boolean,
+          Boolean
         ) as string[];
         attachments.push(...uploadedIds);
       }
@@ -290,25 +289,17 @@ export default function ComposeComponent({
         </AnimatePresence>
         <motion.form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full flex flex-col gap-2 bg-muted/50 border-t border-border backdrop-blur-md p-2 shadow-md"
+          className="w-full !bg-transparent flex flex-col gap-2 p-3 shadow-md"
         >
-          <div className="flex flex-row items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              disabled={!channel.havePermission("UploadFiles")}
-              onClick={() => setShowAttachments(!showAttachments)}
-            >
-              <Paperclip className="size-5" />
-            </Button>
+          <div className="w-full flex flex-col gap-2 bg-muted/50 border backdrop-blur-md rounded-2xl p-3">
             <FormField
               control={form.control}
               name="content"
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormControl>
-                    <Input
+                    <textarea
+                      className="resize-none min-w-full h-min outline-none"
                       disabled={!channel.havePermission("SendMessage")}
                       placeholder={
                         files.length > 0
@@ -321,16 +312,29 @@ export default function ComposeComponent({
                 </FormItem>
               )}
             />
-            <Button
-              type="submit"
-              size="icon"
-              disabled={
-                !channel.havePermission("SendMessage") ||
-                (!form.watch("content")?.trim() && files.length === 0)
-              }
-            >
-              <ArrowUp className="w-5 h-5" />
-            </Button>
+            <div className="flex flex-row">
+              <Button
+                type="button"
+                variant="outline"
+                size="default"
+                disabled={!channel.havePermission("UploadFiles")}
+                onClick={() => setShowAttachments(!showAttachments)}
+              >
+                <Paperclip className="size-5" />
+                Attach
+              </Button>
+              <div className="flex-1" />
+              <Button
+                type="submit"
+                size="icon"
+                disabled={
+                  !channel.havePermission("SendMessage") ||
+                  (!form.watch("content")?.trim() && files.length === 0)
+                }
+              >
+                <ArrowUp className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
         </motion.form>
       </Form>
