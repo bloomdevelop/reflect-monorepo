@@ -6,4 +6,5 @@ onlyBuiltDependencies:
   - '@biomejs/biome'
   - '@tailwindcss/oxide'
   - core-js-pure
+  - esbuild
   - sharp
