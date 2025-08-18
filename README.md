@@ -9,13 +9,7 @@ This is a monorepo which shares `apps` and `packages` folder.
 ```
 ├── apps
 │   └── web
-│       ├── postcss.config.mjs
 │       ├── public
-│       │   ├── file.svg
-│       │   ├── globe.svg
-│       │   ├── next.svg
-│       │   ├── vercel.svg
-│       │   └── window.svg
 │       └── src
 │           ├── app
 │           │   ├── app
@@ -46,6 +40,7 @@ This is a monorepo which shares `apps` and `packages` folder.
 │           ├── hooks
 │           └── lib
 └── packages
+
 ```
 
 ## TODO
