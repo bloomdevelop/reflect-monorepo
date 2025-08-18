@@ -4,6 +4,50 @@ An third-party [Revolt.chat](https://revolt.chat) client built with Next.js and 
 
 This is a monorepo which shares `apps` and `packages` folder.
 
+## File Structures
+
+```
+├── apps
+│   └── web
+│       ├── postcss.config.mjs
+│       ├── public
+│       │   ├── file.svg
+│       │   ├── globe.svg
+│       │   ├── next.svg
+│       │   ├── vercel.svg
+│       │   └── window.svg
+│       └── src
+│           ├── app
+│           │   ├── app
+│           │   │   ├── debug
+│           │   │   ├── dm
+│           │   │   │   └── [id]
+│           │   │   ├── home
+│           │   │   └── server
+│           │   │       └── [id]
+│           │   │           └── channel
+│           │   │               └── [channelId]
+│           │   ├── favicon.ico
+│           │   ├── globals.css
+│           │   ├── hooks
+│           │   └── login
+│           ├── assets
+│           ├── components
+│           │   ├── hooks
+│           │   ├── markdown
+│           │   │   ├── components
+│           │   │   └── plugins
+│           │   ├── message
+│           │   │   ├── components
+│           │   │   ├── memoization
+│           │   │   ├── utils
+│           │   │   └── wrappers
+│           │   └── ui
+│           ├── hooks
+│           └── lib
+└── packages
+```
+
 ## TODO
 
 - [ ] Translation (via Paraglide)
