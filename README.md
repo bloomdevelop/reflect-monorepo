@@ -1,7 +1,27 @@
 # Reflect
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/8df44c53068941ab8f58a507136741ea)](https://app.codacy.com/gh/bloomdevelop/reflect-monorepo/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-
-A [Revolt](https://revolt.chat) client built with Next.js and Shadcn/ui
+An third-party [Revolt.chat](https://revolt.chat) client built with Next.js and Shadcn/ui
 
 This is a monorepo which shares `apps` and `packages` folder.
+
+## TODO
+
+- [ ] Translation (via Paraglide)
+- [ ] Improve System Messages
+- [ ] All-new Compose
+    - [ ] Composer feature
+    - [ ] Better Attachment UI
+- [ ] Mobile UI (Pain)
+- [ ] Redo the whole Home page design (yes, it looked like shit)
+- [ ] Proper Config Manager 
+    - [ ] Make it modular
+    - [ ] Design the configuration page/dialog
+    - [ ] Fuzzy Search
+    - [ ] Filtering
+- [ ] Full markdown support
+    - [ ] Fix custom emoji rendering
+    - [ ] Feature packed codeblock
+- [ ] Improved Message UI
+    - [ ] Reply Support
+    - [ ] Reaction Support
+- [ ] Don't memoize Avatar component
