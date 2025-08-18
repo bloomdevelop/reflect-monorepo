@@ -13,40 +13,35 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { MessageContent } from "./message-content";
-import type { SystemMessageType } from "./types";
+import type { SystemMessageType } from "../types";
 
 // Icon and color mapping for system message types
 const SYSTEM_MESSAGE_STYLES: Record<
 	string,
-	{ icon: ReactNode; color: string }
+	{ icon: ReactNode; }
 > = {
-	text: { icon: <MessageCircleIcon />, color: "border-blue-400 bg-blue-50" },
+	text: { icon: <MessageCircleIcon /> },
 	user_joined: {
 		icon: <UserPlusIcon />,
-		color: "border-green-400 bg-green-50",
 	},
-	user_left: { icon: <LogOut />, color: "border-yellow-400 bg-yellow-50" },
-	user_kicked: { icon: <UserMinus />, color: "border-red-400 bg-red-50" },
-	user_banned: { icon: <HammerIcon />, color: "border-red-600 bg-red-100" },
-	user_added: { icon: <UserPlus />, color: "border-green-400 bg-green-50" },
-	user_remove: { icon: <UserMinus />, color: "border-yellow-400 bg-yellow-50" },
-	channel_renamed: { icon: <Pen />, color: "border-purple-400 bg-purple-50" },
+	user_left: { icon: <LogOut /> },
+	user_kicked: { icon: <UserMinus /> },
+	user_banned: { icon: <HammerIcon /> },
+	user_added: { icon: <UserPlus /> },
+	user_remove: { icon: <UserMinus /> },
+	channel_renamed: { icon: <Pen /> },
 	channel_description_changed: {
 		icon: <Pen />,
-		color: "border-purple-400 bg-purple-50",
 	},
 	channel_icon_changed: {
 		icon: <Image />,
-		color: "border-purple-400 bg-purple-50",
 	},
 	channel_ownership_changed: {
 		icon: <Replace />,
-		color: "border-blue-400 bg-blue-50",
 	},
-	message_pinned: { icon: <Pin />, color: "border-orange-400 bg-orange-50" },
+	message_pinned: { icon: <Pin /> },
 	message_unpinned: {
 		icon: <PinOff />,
-		color: "border-orange-400 bg-orange-50",
 	},
 };
 
@@ -190,8 +185,8 @@ export function SystemMessageComponent({
 	const getContent = SYSTEM_MESSAGE_CONTENT_MAP[type];
 	const content = getContent ? getContent(systemMessage) : null;
 
-	const { icon, color } =
-		SYSTEM_MESSAGE_STYLES[type] || { icon: null, color: "" };
+	const { icon } =
+		SYSTEM_MESSAGE_STYLES[type] || { icon: null };
 
 	if (!content) {
 		return null;
@@ -199,7 +194,7 @@ export function SystemMessageComponent({
 
 	return (
 		<div
-			className={`mx-auto w-fit my-3 p-4 rounded-md text-center text-xs flex items-center gap-2 border border-dashed ${color} text-muted-foreground shadow`}
+			className={`w-full my-3 mx-2 p-4 rounded-md text-center text-xs flex items-center gap-2 border border-dashed text-muted-foreground shadow`}
 			style={{ justifyContent: "center" }}
 		>
 			<span className="text-lg" aria-hidden="true">

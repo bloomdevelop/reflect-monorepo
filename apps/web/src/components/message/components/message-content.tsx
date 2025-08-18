@@ -1,5 +1,5 @@
 import { memo } from "react";
-import Markdown from "../markdown/markdown";
+import Markdown from "../../markdown/markdown";
 import ReactMarkdown from "react-markdown";
 
 // Extract the message content component to prevent re-renders

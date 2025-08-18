@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { memo, useState } from "react";
 import type { File } from "revolt.js";
-import { ImageViewer } from "../image-viewer";
+import { ImageViewer } from "../../image-viewer";
 
 export const MessageAttachments = memo(
 	({ attachments }: { attachments?: File[] }) => {

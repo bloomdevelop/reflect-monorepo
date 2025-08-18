@@ -1,6 +1,6 @@
 import { memo, useMemo } from "react";
 import type { User } from "revolt.js";
-import HoverCardComponent from "../user-profile-hover";
+import HoverCardComponent from "../../user-profile-hover";
 
 export const MessageAuthor = memo(({ user }: { user: User }) => {
 	return (

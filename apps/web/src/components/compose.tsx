@@ -30,7 +30,6 @@ type AttachmentsPreviewProps = {
   onAdd: (files: FileList) => void;
 };
 
-
 const AttachmentsPreview = React.memo(
   ({ files, onRemove, onAdd }: AttachmentsPreviewProps) => {
     const [isDragging, setIsDragging] = useState(false);
@@ -66,9 +65,9 @@ const AttachmentsPreview = React.memo(
 
     return (
       <motion.div
-        initial={{ opacity: 0, y: 500 }}
+        initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 500 }}
+        exit={{ opacity: 0, y: 100 }}
         transition={{
           type: "spring",
           stiffness: 180,
@@ -78,7 +77,7 @@ const AttachmentsPreview = React.memo(
         className="w-3/4 mx-auto !z-1"
       >
         <div
-          className={`w-full p-4 border rounded-lg shadow-md transition-colors max-h-56 overflow-auto ${
+          className={`w-full p-4 border rounded-lg shadow-md transition-colors max-h-56 backdrop-blur-md overflow-auto ${
             isDragging
               ? "border-primary bg-primary/10"
               : "border-border bg-muted/50"
@@ -278,20 +277,20 @@ export default function ComposeComponent({
   return (
     <div className="sticky bottom-0 flex flex-col">
       <Form {...form}>
-        <AnimatePresence>
-          {showAttachments && (
-            <AttachmentsPreview
-              files={files}
-              onRemove={removeFile}
-              onAdd={handleAddFiles}
-            />
-          )}
-        </AnimatePresence>
         <motion.form
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full !bg-transparent flex flex-col gap-2 p-3 shadow-md"
         >
           <div className="w-full flex flex-col gap-2 bg-muted/50 border backdrop-blur-md rounded-2xl p-3">
+            <AnimatePresence>
+              {showAttachments && (
+                <AttachmentsPreview
+                  files={files}
+                  onRemove={removeFile}
+                  onAdd={handleAddFiles}
+                />
+              )}
+            </AnimatePresence>
             <FormField
               control={form.control}
               name="content"
