@@ -21,8 +21,6 @@ This is a monorepo which shares `apps` and `packages` folder.
 │           │   │       └── [id]
 │           │   │           └── channel
 │           │   │               └── [channelId]
-│           │   ├── favicon.ico
-│           │   ├── globals.css
 │           │   ├── hooks
 │           │   └── login
 │           ├── assets
@@ -40,6 +38,8 @@ This is a monorepo which shares `apps` and `packages` folder.
 │           ├── hooks
 │           └── lib
 └── packages
+
+
 
 ```
 
