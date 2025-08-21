@@ -1,6 +1,6 @@
 # Reflect
 
-An third-party [Revolt.chat](https://revolt.chat) client built with Next.js and Shadcn/ui
+A third-party [Revolt.chat](https://revolt.chat) client built with Next.js and Shadcn/ui
 
 This is a monorepo which shares `apps` and `packages` folder.
 
@@ -45,14 +45,15 @@ This is a monorepo which shares `apps` and `packages` folder.
 
 ## TODO
 
-- [ ] Translation (via Paraglide)
+- [ ] Localization Support (via Paraglide)
 - [ ] Improve System Messages
 - [ ] All-new Compose
     - [ ] Composer feature
     - [ ] Better Attachment UI
 - [ ] Mobile UI (Pain)
-- [ ] Redo the whole Home page design (yes, it looked like shit)
-- [ ] Proper Config Manager 
+- [ ] Login UI Re-Design
+- [ ] Redo the whole Homepage design (yes, it looked like shit)
+- [ ] Proper Config Manager
     - [ ] Make it modular
     - [ ] Design the configuration page/dialog
     - [ ] Fuzzy Search
