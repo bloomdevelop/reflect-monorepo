@@ -5,7 +5,6 @@ import {
 	type ThemeProviderProps,
 	useTheme as useNextTheme,
 } from "next-themes";
-import * as React from "react";
 import { useEffect } from "react";
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {

@@ -1,39 +1,46 @@
 import { useState } from "react";
+import {
+	type CustomComponentProps,
+	createComponent,
+} from "./remarkRegexComponent";
 
-import { createComponent, type CustomComponentProps } from "./remarkRegexComponent";
-
-function Spoiler({ shown, children }: { shown: boolean; children: React.ReactNode }) {
-    return (
-        <div
-            className={[
-                'px-0.5 rounded-[var(--border-radius)]',
-                shown
-                    ? 'cursor-auto select-all text-[var(--foreground)] bg-[var(--secondary-background)] [&>*]:opacity-100 [&>*]:pointer-events-auto'
-                    : 'cursor-pointer select-none text-transparent bg-[#151515] [&>*]:opacity-0 [&>*]:pointer-events-none',
-            ].join(' ')}
-        >
-            {children}
-        </div>
-    );
-}
-
-function SpoilerContent({ children, shown }: { shown: boolean, children: React.ReactNode }) {
-    return <div>{children}</div>;
+function Spoiler({
+	shown,
+	children,
+}: {
+	shown: boolean;
+	children: React.ReactNode;
+}) {
+	return (
+		<div
+			className={[
+				"px-0.5 rounded-[var(--border-radius)]",
+				shown
+					? "cursor-auto select-all text-[var(--foreground)] bg-[var(--secondary-background)] [&>*]:opacity-100 [&>*]:pointer-events-auto"
+					: "cursor-pointer select-none text-transparent bg-[#151515] [&>*]:opacity-0 [&>*]:pointer-events-none",
+			].join(" ")}
+		>
+			{children}
+		</div>
+	);
 }
 
 export function RenderSpoiler({ match }: CustomComponentProps) {
-    const [shown, setShown] = useState(false);
+	const [shown, setShown] = useState(false);
 
-    return (
-        <div
-            onClick={() => setShown(true)}
-            onKeyDown={e => {
-                if (e.key === 'Enter' || e.key === ' ') setShown(true);
-            }}
-        >
-            <Spoiler shown={shown}>{match}</Spoiler>
-        </div>
-    );
+	return (
+		<button
+			type="button"
+			onClick={() => setShown(true)}
+			aria-expanded={shown}
+			className="p-0 m-0 border-0 bg-transparent"
+		>
+			<Spoiler shown={shown}>{match}</Spoiler>
+		</button>
+	);
 }
 
-export const remarkSpoiler = createComponent("spoiler", /(?:!!([^!]+)!!|\$\$([^\$]+)\$\$)/g);
+export const remarkSpoiler = createComponent(
+	"spoiler",
+	/(?:!!([^!]+)!!|\$\$([^$]+)\$\$)/g,
+);

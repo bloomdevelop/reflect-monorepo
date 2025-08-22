@@ -11,6 +11,7 @@ import { Separator } from "./ui/separator";
 import {
 	Sidebar,
 	SidebarContent,
+	SidebarFooter,
 	SidebarGroup,
 	SidebarGroupLabel,
 	SidebarHeader,
@@ -19,6 +20,7 @@ import {
 	SidebarMenuItem,
 } from "./ui/sidebar";
 import { Spinner } from "./ui/spinner";
+import { NavUser } from "./nav-user";
 
 export function ServerListSidebar() {
 	const [servers, setServers] = useState<Server[] | undefined>(undefined);
@@ -119,10 +121,11 @@ export function ServerListSidebar() {
 													asChild
 												>
 													<Link href={`/app/server/${server.id}`}>
-														<Avatar>
+														<Avatar className="!rounded-md">
 															<AvatarImage
 																src={server.iconURL || ""}
 																alt={server.name}
+																className="bg-muted !rounded-md"
 																width={32}
 																height={32}
 															/>
@@ -181,6 +184,9 @@ export function ServerListSidebar() {
 					</SidebarMenu>
 				</SidebarGroup>
 			</SidebarContent>
+			<SidebarFooter>
+				<NavUser />
+			</SidebarFooter>
 		</Sidebar>
 	);
 }

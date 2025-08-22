@@ -68,7 +68,9 @@ export default function DMSidebar() {
 				<SidebarGroup>
 					<SidebarMenu>
 						{loading ? (
-							<p className="p-4 text-sm text-muted-foreground text-center">Loading DMs...</p>
+							<p className="p-4 text-sm text-muted-foreground text-center">
+								Loading DMs...
+							</p>
 						) : dms.length === 0 ? (
 							<p className="p-4 text-sm text-muted-foreground text-center">
 								No direct messages yet

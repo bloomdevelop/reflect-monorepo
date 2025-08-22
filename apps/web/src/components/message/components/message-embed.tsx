@@ -164,15 +164,17 @@ export const MessageEmbedComponent = memo(({ embed }: MessageEmbedProps) => {
 		>
 			<div className="flex flex-col gap-2">
 				<div className="flex items-start gap-2">
-					{(content.iconUrl || content.site) && (
-						content.iconUrl ? (
-								<EmbedIcon url={content.iconUrl} name={content.title || content.site || ""} />
-							) : (
-								<div className="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-muted rounded-sm">
-									<Globe size={16} />
-								</div>
-							)
-					)}
+					{(content.iconUrl || content.site) &&
+						(content.iconUrl ? (
+							<EmbedIcon
+								url={content.iconUrl}
+								name={content.title || content.site || ""}
+							/>
+						) : (
+							<div className="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-muted rounded-sm">
+								<Globe size={16} />
+							</div>
+						))}
 
 					<div className="flex-1 min-w-0">
 						{content.title && (

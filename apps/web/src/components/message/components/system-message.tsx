@@ -16,10 +16,7 @@ import { MessageContent } from "./message-content";
 import type { SystemMessageType } from "../types";
 
 // Icon and color mapping for system message types
-const SYSTEM_MESSAGE_STYLES: Record<
-	string,
-	{ icon: ReactNode; }
-> = {
+const SYSTEM_MESSAGE_STYLES: Record<string, { icon: ReactNode }> = {
 	text: { icon: <MessageCircleIcon /> },
 	user_joined: {
 		icon: <UserPlusIcon />,
@@ -176,7 +173,9 @@ const SYSTEM_MESSAGE_CONTENT_MAP: Record<
 
 export function SystemMessageComponent({
 	systemMessage,
-}: { systemMessage: SystemMessageType }) {
+}: {
+	systemMessage: SystemMessageType;
+}) {
 	if (!systemMessage) {
 		return null;
 	}
@@ -185,8 +184,7 @@ export function SystemMessageComponent({
 	const getContent = SYSTEM_MESSAGE_CONTENT_MAP[type];
 	const content = getContent ? getContent(systemMessage) : null;
 
-	const { icon } =
-		SYSTEM_MESSAGE_STYLES[type] || { icon: null };
+	const { icon } = SYSTEM_MESSAGE_STYLES[type] || { icon: null };
 
 	if (!content) {
 		return null;
@@ -194,7 +192,9 @@ export function SystemMessageComponent({
 
 	return (
 		<div
-			className={`w-full my-3 mx-2 p-4 rounded-md text-center text-xs flex items-center gap-2 border border-dashed text-muted-foreground shadow`}
+			className={
+				"w-full my-3 mx-2 p-4 rounded-md text-center text-xs flex items-center gap-2 border border-dashed text-muted-foreground shadow"
+			}
 			style={{ justifyContent: "center" }}
 		>
 			<span className="text-lg" aria-hidden="true">

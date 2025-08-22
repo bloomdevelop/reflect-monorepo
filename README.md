@@ -52,6 +52,7 @@ This is a monorepo which shares `apps` and `packages` folder.
     - [ ] Better Attachment UI
 - [ ] Mobile UI (Pain)
 - [ ] Login UI Re-Design
+- [ ] User Panel
 - [ ] Redo the whole Homepage design (yes, it looked like shit)
 - [ ] Proper Config Manager
     - [ ] Make it modular

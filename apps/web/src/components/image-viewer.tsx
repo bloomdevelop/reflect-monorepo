@@ -1,9 +1,5 @@
 "use client";
 
-import type React from "react";
-
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -16,7 +12,10 @@ import {
 	ZoomIn,
 	ZoomOut,
 } from "lucide-react";
+import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface ImageInfo {
 	url: string;
@@ -38,7 +37,9 @@ export function ImageViewer({
 }: EnhancedImageViewerProps) {
 	const [currentIndex, setCurrentIndex] = useState(initialIndex);
 	const safeIndex =
-		Number.isInteger(currentIndex) && currentIndex >= 0 && currentIndex < images.length
+		Number.isInteger(currentIndex) &&
+		currentIndex >= 0 &&
+		currentIndex < images.length
 			? currentIndex
 			: 0;
 	const currentImage = images[safeIndex] || { url: "", filename: "" };
@@ -91,8 +92,8 @@ export function ImageViewer({
 				const viewportCenterY = viewport.height / 2;
 
 				// Calculate the mouse position relative to the image
-				const mouseX = e.clientX - viewport.left;
-				const mouseY = e.clientY - viewport.top;
+				const mouseX = (e as WheelEvent).clientX - viewport.left;
+				const mouseY = (e as WheelEvent).clientY - viewport.top;
 
 				// Calculate the offset from viewport center
 				const offsetX = mouseX - viewportCenterX;
@@ -168,39 +169,8 @@ export function ImageViewer({
 		};
 	}, [isOpen]);
 
-	// Handle keyboard shortcuts
-	useEffect(() => {
-		if (!isOpen) return;
-
-		const handleKeyDown = (e: KeyboardEvent) => {
-			switch (e.key) {
-				case "Escape":
-					onClose();
-					break;
-				case "+":
-					handleZoomIn();
-					break;
-				case "-":
-					handleZoomOut();
-					break;
-				case "r":
-					setRotation((prev) => (prev + 90) % 360);
-					break;
-				case "f":
-					toggleFullscreen();
-					break;
-				case "0":
-					resetView();
-					break;
-			}
-		};
-
-		window.addEventListener("keydown", handleKeyDown);
-		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [isOpen, onClose]);
-
 	// Handle fullscreen
-	const toggleFullscreen = () => {
+	const toggleFullscreen = useCallback(() => {
 		if (!document.fullscreenElement) {
 			containerRef.current?.requestFullscreen().catch((err) => {
 				console.error(`Error attempting to enable fullscreen: ${err.message}`);
@@ -210,25 +180,14 @@ export function ImageViewer({
 			document.exitFullscreen();
 			setIsFullscreen(false);
 		}
-	};
-
-	// Listen for fullscreen change
-	useEffect(() => {
-		const handleFullscreenChange = () => {
-			setIsFullscreen(!!document.fullscreenElement);
-		};
-
-		document.addEventListener("fullscreenchange", handleFullscreenChange);
-		return () =>
-			document.removeEventListener("fullscreenchange", handleFullscreenChange);
 	}, []);
 
 	// Reset view
-	const resetView = () => {
+	const resetView = useCallback(() => {
 		setZoomLevel(1);
 		setPosition({ x: 0, y: 0 });
 		setRotation(0);
-	};
+	}, []);
 
 	// Handle zoom buttons with dynamic anchor
 	const handleZoomIn = useCallback(() => {
@@ -266,6 +225,55 @@ export function ImageViewer({
 			setZoomLevel(newZoom);
 		}
 	}, [zoomLevel, position]);
+
+	// Handle keyboard shortcuts
+	useEffect(() => {
+		if (!isOpen) return;
+
+		const handleKeyDown = (e: KeyboardEvent) => {
+			switch (e.key) {
+				case "Escape":
+					onClose();
+					break;
+				case "+":
+					handleZoomIn();
+					break;
+				case "-":
+					handleZoomOut();
+					break;
+				case "r":
+					setRotation((prev) => (prev + 90) % 360);
+					break;
+				case "f":
+					toggleFullscreen();
+					break;
+				case "0":
+					resetView();
+					break;
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [
+		isOpen,
+		onClose,
+		handleZoomIn,
+		handleZoomOut,
+		toggleFullscreen,
+		resetView,
+	]);
+
+	// Listen for fullscreen change
+	useEffect(() => {
+		const handleFullscreenChange = () => {
+			setIsFullscreen(!!document.fullscreenElement);
+		};
+
+		document.addEventListener("fullscreenchange", handleFullscreenChange);
+		return () =>
+			document.removeEventListener("fullscreenchange", handleFullscreenChange);
+	}, []);
 
 	// Handle rotation
 	const handleRotate = () => {
@@ -422,6 +430,7 @@ export function ImageViewer({
 							willChange: "transform",
 						}}
 					>
+						{/** biome-ignore lint/performance/noImgElement: Since it's a image viewer it shouldn't have a single issue. */}
 						<img
 							ref={imageRef}
 							src={imageUrl || "/placeholder.svg"}

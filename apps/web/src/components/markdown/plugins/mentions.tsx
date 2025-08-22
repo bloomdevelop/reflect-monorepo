@@ -1,7 +1,10 @@
 import { RE_MENTIONS } from "revolt.js";
 
 // import UserShort from "../../common/user/UserShort";
-import { createComponent, type CustomComponentProps } from "./remarkRegexComponent";
+import {
+	createComponent,
+	type CustomComponentProps,
+} from "./remarkRegexComponent";
 import { client } from "@/lib/revolt";
 
 // const Mention = styled.a`
@@ -37,21 +40,21 @@ import { client } from "@/lib/revolt";
 // `;
 
 export function RenderMention({ match }: CustomComponentProps) {
-    const user = client.users.get(match);
-    if (!user) {
-        return <span>@{match}</span>;
-    }
-    return (
-        <div className="inline-flex items-center">
-            {/* <UserShort
+	const user = client.users.get(match);
+	if (!user) {
+		return <span>@{match}</span>;
+	}
+	return (
+		<div className="inline-flex items-center">
+			{/* <UserShort
                 showServerIdentity
                 user={client.users.get(match)}
             /> */}
-            <span className="text-primary font-semibold">@{user.username}</span>
-        </div>
-    );
+			<span className="text-primary font-semibold">@{user.username}</span>
+		</div>
+	);
 }
 
 export const remarkMention = createComponent("mention", RE_MENTIONS, (match) =>
-    client.users.has(match),
+	client.users.has(match),
 );

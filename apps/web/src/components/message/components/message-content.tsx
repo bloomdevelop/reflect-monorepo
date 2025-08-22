@@ -7,7 +7,10 @@ export const MessageContent = memo(
 	({
 		content,
 		useNewMarkdown,
-	}: { content: string; useNewMarkdown?: boolean }) => (
+	}: {
+		content: string;
+		useNewMarkdown?: boolean;
+	}) => (
 		<div className="w-full min-w-0 break-all">
 			{useNewMarkdown ? (
 				<Markdown content={content} />

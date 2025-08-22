@@ -6,7 +6,6 @@ import { client } from "@/lib/revolt";
 import { Dot, Server as ServerIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
 import type { Server } from "revolt.js";
 
 export default function ServerPage({

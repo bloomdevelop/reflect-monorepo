@@ -6,6 +6,13 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
+export function getInitials(name: string) {
+	return name
+		.split(" ")
+		.map((word) => word[0])
+		.join("");
+}
+
 export class CdnClass {
 	private readonly BASE_URL = "https://cdn.revoltusercontent.com";
 

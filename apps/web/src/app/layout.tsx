@@ -4,7 +4,6 @@ import "./globals.css";
 import { ReactScan } from "@/components/react-scan";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { Client } from "revolt.js";
 import { LogProvider } from "@/app/hooks/useLogContext";
 
 export const metadata: Metadata = {
@@ -20,22 +19,22 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-  return (
-	<html lang="en">
-	  {process.env.NODE_ENV === "development" && <ReactScan />}
-	  <body className={`${geist.className} antialiased`}>
-		<LogProvider>
-		  <ThemeProvider
-			attribute="class"
-			defaultTheme="system"
-			enableSystem
-			disableTransitionOnChange
-		  >
-			<Toaster />
-			{children}
-		  </ThemeProvider>
-		</LogProvider>
-	  </body>
-	</html>
-  );
+	return (
+		<html lang="en">
+			{process.env.NODE_ENV === "development" && <ReactScan />}
+			<body className={`${geist.className} antialiased`}>
+				<LogProvider>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange
+					>
+						<Toaster />
+						{children}
+					</ThemeProvider>
+				</LogProvider>
+			</body>
+		</html>
+	);
 }

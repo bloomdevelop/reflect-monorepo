@@ -1,20 +1,18 @@
+import { User as UserIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import type { User, UserProfile } from "revolt.js";
 import {
 	Dialog,
-	DialogClose,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { client } from "@/lib/revolt";
-import { Info, User as UserIcon, X } from "lucide-react";
-import { useEffect, useState } from "react";
-import type { User, UserProfile } from "revolt.js";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Button } from "./ui/button";
 import Markdown from "./markdown/markdown";
-import ReactMarkdown from "react-markdown";
-import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
+import Image from "next/image";
 
 export default function UserProfileDialog({
 	user,
@@ -67,7 +65,9 @@ export default function UserProfileDialog({
 				</DialogHeader>
 				<div className="flex flex-col relative w-full h-48">
 					{bannerSrc ? (
-						<img
+						<Image
+							width={1000}
+							height={50}
 							src={bannerSrc || ""}
 							alt={`${user.username}'s banner`}
 							className="object-cover absolute w-full h-full"
@@ -85,9 +85,7 @@ export default function UserProfileDialog({
 							</Avatar>
 							<h2 className="text-lg font-semibold">{user.username}</h2>
 							{user.status && (
-								<Badge variant="outline">
-									{user.status.presence}
-								</Badge>
+								<Badge variant="outline">{user.status.presence}</Badge>
 							)}
 						</div>
 					)}
@@ -103,9 +101,7 @@ export default function UserProfileDialog({
 						</Avatar>
 						<h2 className="text-lg font-semibold">{user.username}</h2>
 						{user.status && (
-							<Badge variant="outline">
-								{user.status.presence}
-							</Badge>
+							<Badge variant="outline">{user.status.presence}</Badge>
 						)}
 					</div>
 				</div>

@@ -1,5 +1,12 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { memo, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -11,14 +18,10 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { loginWithCredentials } from "@/lib/auth";
+import { clearSavedRedirectPath, getRedirectPath } from "@/lib/redirect";
 import { client } from "@/lib/revolt";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2Icon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { memo, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
 import { useLog } from "../hooks/useLogContext";
 
 const formSchema = z.object({
@@ -26,10 +29,14 @@ const formSchema = z.object({
 	password: z.string(),
 });
 
+const MemoizedInput = memo(Input);
+
 export default function LoginPage() {
 	const { addLog } = useLog();
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [connectionStep, setConnectionStep] = useState<string>("");
+	const [progress, setProgress] = useState<number>(0);
 	const form = useForm<z.infer<typeof formSchema>>({
 		mode: "onChange",
 		reValidateMode: "onChange",
@@ -40,49 +47,92 @@ export default function LoginPage() {
 		},
 	});
 
-	const MemoizedInput = memo(Input);
+	// Listen to connection events for progress tracking
+	useEffect(() => {
+		if (!isLoading) return;
+
+		const handleConnecting = () => {
+			setConnectionStep("Connecting to server...");
+			setProgress(25);
+		};
+
+		const handleConnected = () => {
+			setConnectionStep("Connected! Authenticating...");
+			setProgress(50);
+		};
+
+		const handleReady = () => {
+			setConnectionStep("Authentication complete!");
+			setProgress(100);
+			setTimeout(() => {
+				setConnectionStep("");
+				setProgress(0);
+			}, 1000);
+		};
+
+		const handleError = () => {
+			setConnectionStep("Connection failed");
+			setProgress(0);
+			setTimeout(() => {
+				setConnectionStep("");
+			}, 2000);
+		};
+
+		client.on("connecting", handleConnecting);
+		client.on("connected", handleConnected);
+		client.on("ready", handleReady);
+		client.on("error", handleError);
+
+		return () => {
+			client.off("connecting", handleConnecting);
+			client.off("connected", handleConnected);
+			client.off("ready", handleReady);
+			client.off("error", handleError);
+		};
+	}, [isLoading]);
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
+		if (isLoading) return; // Prevent double submission
+		setIsLoading(true);
+		addLog(`Attempting to log in with email: ${values.email}`);
+
+		setConnectionStep("Logging in...");
+		setProgress(10);
+
 		toast.promise(
 			async () => {
-				addLog(`Attempting to log in with email: ${values.email}`);
-				setIsLoading(true);
-
 				try {
+					addLog("Calling login API...");
+					await loginWithCredentials(values.email, values.password);
+					addLog(`Login API successful for: ${values.email}`);
+					addLog("WebSocket connected and client is ready");
 
-					await client
-						.login({
-							email: values.email,
-							password: values.password,
-							friendly_name: "Reflect",
-						})
-						.catch((error) => {
-							throw new Error(error);
-						});
-					addLog(`Logged in successfully with email: ${values.email}`);
-					client.connect();
-					addLog("Connected to Revolt WebSocket");
-					
+					// Get appropriate redirect path
+					const redirectPath = getRedirectPath();
+					addLog(`Redirecting to: ${redirectPath}`);
 
-					setIsLoading(false);
-					return router.push("/app/home");
+					// Clear any saved redirect path
+					clearSavedRedirectPath();
+
+					// Don't set loading false here - let redirect handle it
+					return router.push(redirectPath);
 				} catch (error) {
-					if (error instanceof Error) {
-						toast.error(error.message);
-						console.log(error.message);
-					} else {
-						addLog("An unknown error occurred during login");
-						toast.error("An unknown error occurred");
-						console.log(error);
-					}
-
 					setIsLoading(false);
+					setConnectionStep("");
+					setProgress(0);
+
+					if (error instanceof Error) {
+						addLog(`Login failed: ${error.message}`);
+						throw error;
+					}
+					addLog("An unknown error occurred during login");
+					throw new Error("An unknown error occurred");
 				}
 			},
 			{
-				loading: "Logging in...",
-				success: "Logged in successfully",
-				error: "Failed to log in",
+				loading: "Authenticating...",
+				success: "Connected! Redirecting...",
+				error: "Failed to connect",
 			},
 		);
 	}
@@ -92,6 +142,17 @@ export default function LoginPage() {
 			<Card className="w-full max-w-lg">
 				<CardHeader>Let's get logged in</CardHeader>
 				<CardContent>
+					{isLoading && connectionStep && (
+						<div className="mb-6 space-y-3">
+							<div className="flex items-center space-x-2">
+								<Loader2Icon className="h-4 w-4 animate-spin" />
+								<span className="text-sm text-muted-foreground">
+									{connectionStep}
+								</span>
+							</div>
+							<Progress value={progress} className="w-full" />
+						</div>
+					)}
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 							<FormField
@@ -127,9 +188,11 @@ export default function LoginPage() {
 									</FormItem>
 								)}
 							/>
-							<Button type="submit" disabled={isLoading}>
-								{isLoading && <Loader2Icon className="animate-spin" />}
-								Log In
+							<Button type="submit" disabled={isLoading} className="w-full">
+								{isLoading && (
+									<Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+								)}
+								{isLoading ? "Connecting..." : "Log In"}
 							</Button>
 						</form>
 					</Form>
